@@ -279,14 +279,26 @@
 						<td colspan="2">
 							<select class="custom-select">
 								<option>Выберите модель</option>
-								<option>Intel(R) HD Graphics</option>
-								<option>Integrated</option>
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '2', 'description');
+									get_db_list($pdo, 'Periphery', 'category', '2', 'pd_model');
+								?>
 							</select>
 							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
-						<td></td>
 						<td>
-							<input type="text" class="input-group-text" placeholder="Примечание">
+							<p style="color: blue">инв.номер:</p>
+							<input type="text" class="input-group-text" placeholder="Номер">
+						</td>
+						<td>
+							<select class="custom-select">
+								<option>Примечание
+								<?php
+                                    get_db_list($pdo, 'Hardware', 'category', '2', 'hw_note');
+                                    get_db_list($pdo, 'Periphery', 'category', '2', 'pd_note');
+                                ?>
+							</select>
+							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger">Удалить</button>
@@ -315,20 +327,30 @@
 						<td>
 							<select class="custom-select" name="select">
 								<option>Выберите тип устройства</option>
-								<option>Звуковой адаптер</option>
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '3', 'hw_name');
+								?>
 							</select>
 							<input type="text" name="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td colspan="2">
 							<select class="custom-select">
 								<option>Выберите модель</option>
-								<option>Intel Cougar Point PCH - High Definition Audio Controller</option>
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '3', 'description');
+								?>
 							</select>
 							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td></td>
 						<td>
-							<input type="text" class="input-group-text" placeholder="Примечание">
+							<select class="custom-select">
+								<option>Примечание
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '3', 'hw_note');
+								?>
+							</select>
+							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger">Удалить</button>
@@ -357,26 +379,38 @@
 						<td>
 							<select class="custom-select" name="select">
 								<option>Выберите тип устройства</option>
-								<option>Сетевой адаптер</option>
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '4', 'hw_name');
+								?>
 							</select>
 							<input type="text" name="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td colspan="2">
 							<select class="custom-select">
 								<option>Выберите модель</option>
-								<option>Realtek RTL8188CE Wireless LAN 802.11n PCI-E</option>
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '4', 'description');
+								?>
 							</select>
 							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<select class="custom-select">
 								<option>Выберите количество</option>
-								<option>1</option>
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '4', 'feature');
+								?>
 							</select>
 							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td>
-							<input type="text" class="input-group-text" placeholder="Примечание">
+							<select class="custom-select">
+								<option>Примечание
+								<?php
+									get_db_list($pdo, 'Hardware', 'category', '4', 'hw_note');
+								?>
+							</select>
+							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger">Удалить</button>
@@ -400,23 +434,29 @@
 					<td colspan="2">
 						<select class="custom-select" name="Tower">
 							<option> Выберите тип
-							<option> Моноблок
+							<?php
+								get_db_list($pdo, 'Hardware', 'category', '5', 'description');
+							?>
 						</select>
 						<input type="text" class="input-group-text" placeholder="Ручной ввод">
 					</td>
 					<td>
 						<select class="custom-select" name="Power">
 							<option> Выберите мощность
-							<option> 350
+							<?php
+								get_db_list($pdo, 'Hardware', 'category', '5', 'feature');
+							?>
 						</select>
 						<input type="text" class="input-group-text" placeholder="Ручной ввод">
 					</td>
 					<td colspan="2">
 						<select class="custom-select" name="Prim">
-							<option> Выберите примечание
-							<option> Мощность блока питания
+							<option> Примечание
+							<?php
+								get_db_list($pdo, 'Hardware', 'category', '5', 'hw_note');
+							?>
 						</select>
-						<input type="text" class="input-group-text" placeholder="Примечание">
+						<input type="text" class="input-group-text" placeholder="Ручной ввод">
 					</td>
 				</tr>
 
@@ -425,13 +465,14 @@
 					<td colspan="2">
 						<select class="custom-select" name="Printer">
 							<option> Выберите модель
-							<option> Xerox 3220
+							<?php
+								get_db_list($pdo, 'Periphery', 'category', '7', 'pd_model');
+							?>
 						</select>
 						<input type="text" class="input-group-text" placeholder="Ручной ввод">
 					</td>
-					<td></td>
 					<th style="color: blue">инв.номер:</th>
-					<td colspan="2">
+					<td colspan="3">
 						<input type="text" class="input-group-text" placeholder="Номер">
 					</td>
 				</tr>
@@ -446,24 +487,31 @@
 							<td>
 								<select class="custom-select" name="select">
 									<option>Выберите тип устройства</option>
+									<?php
+										get_db_list($pdo, 'Periphery', 'category', '10', 'pd_name');
+									?>
 								</select>
 								<input type="text" name="text" class="input-group-text" placeholder="Ручной ввод">
 							</td>
 							<td colspan="2">
 								<select class="custom-select">
-									<option>Описание</option>
+									<option>Выберите описание</option>
+									<?php
+										get_db_list($pdo, 'Periphery', 'category', '10', 'pd_model');
+									?>
 								</select>
 								<input type="text" class="input-group-text" placeholder="Ручной ввод">
 							</td>
 							<td>
 								<select class="custom-select">
 									<option>Характеристика</option>
+									<?php
+										get_db_list($pdo, 'Periphery', 'category', '10', 'feature');
+									?>
 								</select>
 								<input type="text" class="input-group-text" placeholder="Ручной ввод">
 							</td>
-							<td>
-								<input type="text" class="input-group-text" placeholder="Примечание">
-							</td>
+							<td></td>
 							<td>
 								<button type="button" class="del btn btn-danger">Удалить</button>
 							</td>
@@ -501,17 +549,18 @@
 						<td>
 							<select class="custom-select" name="select">
 								<option>Выберите наименование</option>
-								<option>Microsoft Windows</option>
-								<option>Microsoft Office</option>
-								<option>"Культура"</option>
+								<?php
+									get_db_list($pdo, 'Software', 'sw_name', '', '');
+								?>
 							</select>
 							<input type="text" name="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<select class="custom-select">
 								<option>Выберите тип лицензии</option>
-								<option>OEM</option>
-								<option>Academic</option>
+								<?php
+									get_db_list($pdo, 'Software', 'licence_type', '', '');
+								?>
 							</select>
 							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 						</td>
@@ -522,10 +571,22 @@
 							<input type="text" class="input-group-text" placeholder="Ключ продукта">
 						</td>
 						<td>
+							<select class="custom-select">
+								<option>Выберите версию</option>
+								<?php
+									get_db_list($pdo, 'Software', 'version', '', '');
+								?>
+							</select>
 							<input type="text" class="input-group-text" placeholder="Версия">
 						</td>
 						<td>
-							<input type="text" class="input-group-text" placeholder="Примечание">
+							<select class="custom-select">
+								<option>Примечание</option>
+								<?php
+									get_db_list($pdo, 'Software', 'sw_note', '', '');
+								?>
+							</select>
+							<input type="text" class="input-group-text" placeholder="Ручной ввод">
 							<button type="button" class="del btn btn-danger">Удалить строку</button>
 						</td>
 					</tr>
