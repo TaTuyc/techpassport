@@ -19,7 +19,7 @@
                 ORDER BY $value";
             $result = $pdo->query($sql);
             foreach($result as $row) {
-                echo "<option>" . $row[$value];
+                echo "<option " . "value=\"" . htmlspecialchars($row[$value]) . "\"> " . htmlspecialchars($row[$value]);
             }
         } else {
             $sql =
@@ -29,7 +29,7 @@
                 ORDER BY $column_name";
             $result = $pdo->query($sql);
             foreach($result as $row) {
-                echo "<option>" . $row[$column_name];
+                echo "<option " . "value=\"" . htmlspecialchars($row[$column_name]) . "\"> " . htmlspecialchars($row[$column_name]);
             }
         };
     }
