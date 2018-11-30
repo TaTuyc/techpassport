@@ -1,11 +1,38 @@
 <?php
-
+    session_start();
     function connect_db ($login, $password) {
         try {
             $pdo = new PDO('mysql:host=localhost;dbname=Passport;charset=utf8', $login, $password);
             return $pdo;
         } catch (PDOException $e) {
             die('Подключение не удалось. Код ошибки: ' . $e->getMessage());
+        }
+    }
+    
+    function find_user ($pdo, $login) {
+        $login = "'" . $login . "'";
+        $empty_check = true;
+        $result = $pdo->query("SELECT $login
+            FROM User
+            WHERE login = $login");
+        foreach($result as $row) {
+            $empty_check = false;
+        }
+        if ($empty_check) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function find_password ($pdo, $login) {
+        $login = "'" . $login . "'";
+        $sql = "SELECT password
+            FROM User
+            WHERE login = $login";
+        $result = $pdo->query($sql);
+        foreach($result as $row) {
+            return htmlspecialchars($row['password']);
         }
     }
     

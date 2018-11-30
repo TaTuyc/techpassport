@@ -1,3 +1,11 @@
+<?php
+include 'action.php';
+if (isset($_POST['log_out'])) {
+	unset($_SESSION['logged_user']);
+	header('Location: ./login.php');
+}
+if (isset($_SESSION['logged_user'])) {
+?>
 <!DOCTYPE html>
 <html>
 
@@ -11,7 +19,7 @@
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<script type="text/javascript" src="script/jquery.js"></script>
 	<script type="text/javascript" src="script/dynamicTable.js"></script>
-    <?php include 'action.php';
+    <?php
         $pdo = connect_db('root', '62996326');
     ?>
 </head>
@@ -20,6 +28,8 @@
 
 <body>
 	<div class="table-responsive text-center" style="width: 80%; margin: auto">
+		<p>Здравствуйте, миу.</p>
+		<a href="logout.php">Выйти</a>
 		<table id="pasport" class="table table-bordered table-hover ">
 			<thead>
 				<tr>
@@ -34,7 +44,11 @@
 
 			<tbody>
 				<tr>
-					<th scope="row">Дата производства:</th>
+					<th scope="row">Дата производства:
+					<?php
+						echo find_password($pdo, 'admin');
+					?>
+					</th>
 					<td colspan="2">
 						<input type="date" class="custom-select" name="manufacture_date">
 					</td>
@@ -606,3 +620,9 @@
 </body>
 
 </html>
+
+<?php
+} else {
+	echo "Доступ запрещён. Вы можете авторизоваться";
+}
+?>

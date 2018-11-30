@@ -1,3 +1,28 @@
+<?php 
+	include 'action.php';
+    $pdo = connect_db('root', '62996326');
+	
+	// нельзя напрямую обращаться к POST-переменным
+	$data = $_POST;
+	if (isset($data['log_in'])) {
+		$user = $data['usr'];
+		if (find_user($pdo, $user)) {
+			//логин существует
+			if ($data['pswrd'] == find_password($pdo, $user)) {
+				//если пароль совпадает, то нужно авторизовать пользователя
+				$_SESSION['logged_user'] = $user;
+				session_write_close();
+				header('Location: ./passport.php');
+				exit();
+			} else {
+				$errors[] = 'Неверный пароль!';
+			}
+		} else {
+			$errors[] = 'Пользователь не найден!';
+		}
+	}
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -8,14 +33,19 @@
 
 	<body>
 
-		<form id="login">
+		<form id="login" action="login.php" method="post">
 		    <h1>Вход в систему</h1>
-		    <fieldset id="inputs">
-		        <input id="username" type="text" placeholder="Логин" autofocus required>
-		        <input id="password" type="password" placeholder="Пароль" required>
+			<?php
+				if (!empty($errors)) {
+					echo "<p style = \"color: red; font-size: 14pt; margin: 0; padding: 0\">" . array_shift($errors);
+				}
+			?>
+			<fieldset id="inputs">
+		        <input id="username" name="usr" type="text" placeholder="Логин" autofocus required>
+		        <input id="password" name="pswrd" type="password" placeholder="Пароль" required>
 		    </fieldset>
 		    <fieldset id="actions">
-		        <input type="submit" id="submit" value="Войти">
+		        <input id="submit" type="submit" name="log_in" value="Войти">
 		    </fieldset>
 		</form>
 	</body>
