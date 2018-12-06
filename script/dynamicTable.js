@@ -31,8 +31,11 @@ var DynamicTable = (function (GLOB) {
                     {
                         elements.item(i).value = RID;
                     } else {
-                        elements.item(i).name = RID + "["+ elements.item(i).name +"]";
+                        elements.item(i).name = elements.item(i).name + '_elem' + RID;
                     }
+                }
+                if (elements.item(i).id) {
+                    elements.item(i).id = elements.item(i).id + '_elem' + RID;
                 }
             }
             RID++;
