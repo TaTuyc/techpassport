@@ -23,6 +23,10 @@ if (isset($_SESSION['logged_user'])) {
 	<script type="text/javascript" src="jquery/jquerymin.js"></script>
     <script type="text/javascript">
 		const DELAY = 200;
+		qq = true;
+		
+		max_index = 0;
+		
 		function eventChange(parent_id, call_type, name_, category_, index_) {
 			var parent_var = $('#' + parent_id).val();
 			if (parent_var != "") {
@@ -88,13 +92,10 @@ if (isset($_SESSION['logged_user'])) {
 		}
 		
 		function childEvent(parent_id, call_type, name_, category_, index_) {
-			var del;
-			if (name_ == 'feature') {
-				del = DELAY * 2;
-			}
+			var del = DELAY * 2;
 			setTimeout(function() {
 				$('#' + parent_id).on('change.namespace2', eventChange(parent_id, call_type, name_, category_, index_));
-			}, DELAY);
+			}, del);
 		}
 		
 		$(document).ready(function(){
@@ -174,53 +175,55 @@ if (isset($_SESSION['logged_user'])) {
 					$('#cpu_frequency').html('<option value="">Выберите частоту</option>');
 					$('#cpu_note').html('<option value="">Примечание</option>'); 
 				}
-			});
-			
-			$('body').on('change.namespace1', function(){
-				var elements = document.getElementsByTagName("*");
-				for (var i = 0; i < elements.length; i += 1) {
-					if (elements.item(i).id) {
-						var parent_id = elements.item(i).id;
-						var name_ = getName(parent_id);
-						var category_ = getCategory(parent_id);
-						var index_ = getIndex(parent_id);
-						if (getTypeDynamicRow(parent_id) == 1) {
-							if (name_ == 'hw_name') {
-								$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '1', name_, category_, index_));
-								//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
-							} else if (name_ == 'description') {
-								childEvent(parent_id, 'f', name_, category_, index_);
-								childEvent(parent_id, 'n', name_, category_, index_);
-								//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'f', name_, category_, index_));
-								//$('#' + parent_id).on('change.namespace3', eventChange(parent_id, 'n', name_, category_, index_));
-							} else if (name_ == 'pd_name') {
-								$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '1_pd', name_, category_, index_));
-								//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
-							} else if (name_ == 'pd_model') {
-								childEvent(parent_id, 'f_pd', name_, category_, index_);
-							}
-						} else if (getTypeDynamicRow(parent_id) == 2) {
-							if (name_ == 'sw_name') {
-								$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '2', name_, category_, index_));
-								$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'v_sw', name_, category_, index_));
-								$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'n_sw', name_, category_, index_));
-								//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'v_sw', name_, category_, '-1'));
-								//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'n_sw', name_, category_, '-1'));
-							}
-						} else if (getTypeDynamicRow(parent_id) == 3) {
-							if (name_ == 'description') {
-								//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
-								$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '3', name_, category_, '-1'));
-								$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '3n', name_, category_, '-1'));
-							}
-						}
-					}
+			});			
+		});
+		
+		$(document).on('change', function(e) {
+            //console.log(e.target.id);
+			var parent_id = e.target.id;
+			console.log(e.target);
+			var name_ = getName(parent_id);
+			var category_ = getCategory(parent_id);
+			var index_ = getIndex(parent_id);
+			if (getTypeDynamicRow(parent_id) == 1) {
+				if (name_ == 'hw_name') {
+					eventChange(parent_id, '1', name_, category_, index_);
+					param = 'description_c' + category_ + '_elem' + index_;
+					childEvent(param, 'f', 'description', category_, index_);
+					childEvent(param, 'n', 'description', category_, index_);
+					//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
+				} else if (name_ == 'description') {
+					//console.log(parent_id + '//////////  и где?');
+					childEvent(parent_id, 'f', name_, category_, index_);
+					childEvent(parent_id, 'n', name_, category_, index_);
+					//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'f', name_, category_, index_));
+					//$('#' + parent_id).on('change.namespace3', eventChange(parent_id, 'n', name_, category_, index_));
+				} else if (name_ == 'pd_name') {
+					$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '1_pd', name_, category_, index_));
+					childEvent('pd_model_c' + category_ + '_elem' + index_, 'f_pd', name_, category_, index_);
+					//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
+				} else if (name_ == 'pd_model') {
+					childEvent(parent_id, 'f_pd', name_, category_, index_);
 				}
-			});
+			} else if (getTypeDynamicRow(parent_id) == 2) {
+				if (name_ == 'sw_name') {
+					eventChange(parent_id, '2', name_, category_, index_);
+					eventChange(parent_id, 'v_sw', name_, category_, index_);
+					eventChange(parent_id, 'n_sw', name_, category_, index_);
+					//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'v_sw', name_, category_, '-1'));
+					//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'n_sw', name_, category_, '-1'));
+				}
+			} else if (getTypeDynamicRow(parent_id) == 3) {
+				if (name_ == 'description') {
+					//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
+					$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '3', name_, category_, '-1'));
+					$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '3n', name_, category_, '-1'));
+				}
+			}
 		});
 	</script>
 	<?php
-        $pdo = connect_db('root', '62996326');
+        $pdo = connect_db();
     ?>
 </head>
 
@@ -228,8 +231,13 @@ if (isset($_SESSION['logged_user'])) {
 
 <body>
 	<div class="table-responsive text-center" style="width: 80%; margin: auto">
-		<p>Здравствуйте, миу.</p>
+		<p>Здравствуйте,
+		<?php
+			echo " " . $_SESSION['logged_user'] . "!";
+		?>
+		</p>
 		<a href="logout.php">Выйти</a>
+		<form action="./action.php" method="post">
 		<table id="pasport" class="table table-bordered table-hover ">
 			<thead>
 				<tr>
@@ -257,7 +265,7 @@ if (isset($_SESSION['logged_user'])) {
                                 get_db_list($pdo, 'Manufacture_method', 'method', '', '');
                             ?>
 						</select>
-						<input type="text" class="input-group-text" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="buying_method_manually" placeholder="Ручной ввод">
 					</td>
 				</tr>
 
@@ -302,7 +310,7 @@ if (isset($_SESSION['logged_user'])) {
 				<tr>
 					<th scope="row">ИНВ.НОМЕР:</th>
 					<td colspan="2">
-						<input type="text" class="input-group-text" name="pc_inv_num" placeholder="Номер">
+						<input type="text" class="input-group-text" name="pc_inv_num" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
 					</td>
 					<th scope="row">Ответственный за эксплуатацию:</th>
 					<td colspan="2">
@@ -418,25 +426,25 @@ if (isset($_SESSION['logged_user'])) {
                                     get_db_list($pdo, 'Hardware', 'category', '1', 'hw_name');
                                 ?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_c1_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c1" placeholder="Ручной ввод">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c1" id="description_c1">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_c1_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c1" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<select class="custom-select" name="feature_c1" id="feature_c1">
 								<option value="">Значение
 							</select>
-							<input type="text" class="input-group-text" name="feature_c1_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="feature_manually_c1" placeholder="Ручной ввод">
 						</td>
 						<td>
                             <select class="custom-select" name="hw_note_c1" id="hw_note_c1">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="hw_note_c1_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_note_manually_c1" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c1">Удалить</button>
@@ -465,31 +473,30 @@ if (isset($_SESSION['logged_user'])) {
 							<select class="custom-select" name="hw_name_c2" id="hw_name_c2">
 								<option value="">Выберите тип устройства
 								<?php
-                                    get_db_list($pdo, 'Hardware', 'category', '2', 'hw_name');
-                                    get_db_list($pdo, 'Periphery', 'category', '2', 'pd_name');
+                                    get_db_list_с2($pdo);
                                 ?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_c2_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c2" placeholder="Ручной ввод">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c2" id="description_c2">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_c2_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c2" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<select class="custom-select" name="feature_c2" id="feature_c2">
 								<option value="">Значение
 							</select>
-							<input type="text" class="input-group-text" name="feature_c2_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="feature_manually_c2" placeholder="Ручной ввод">
 							<p style="color: blue; margin: 0; padding: 0">или инв.номер:</p>
-							<input type="text" class="input-group-text" name="pd_inv_num_c2" placeholder="Номер">
+							<input type="text" class="input-group-text" name="pd_inv_num_c2" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
 						</td>
 						<td>
 							<select class="custom-select" name="hw_note_c2" id="hw_note_c2">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="hw_note_c2_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_note_manually_c2" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c2">Удалить</button>
@@ -521,20 +528,20 @@ if (isset($_SESSION['logged_user'])) {
 									get_db_list($pdo, 'Hardware', 'category', '3', 'hw_name');
 								?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_c3_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c3" placeholder="Ручной ввод">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c3" id="description_c3">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_c3_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c3" placeholder="Ручной ввод">
 						</td>
 						<td></td>
 						<td>
 							<select class="custom-select" name="hw_note_c3" id="hw_note_c3">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="hw_note_c3_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_note_manually_c3" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c3">Удалить</button>
@@ -566,25 +573,25 @@ if (isset($_SESSION['logged_user'])) {
 									get_db_list($pdo, 'Hardware', 'category', '4', 'hw_name');
 								?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_c4_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c4" placeholder="Ручной ввод">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c4" id="description_c4">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_c4_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c4" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<select class="custom-select" name="feature_c4" id="feature_c4">
 								<option value="">Значение
 							</select>
-							<input type="text" class="input-group-text" name="feature_c4_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="feature_manually_c4" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<select class="custom-select" name="hw_note_c4" id="hw_note_c4">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="hw_note_c4_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_note_manually_c4" placeholder="Ручной ввод">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c4">Удалить</button>
@@ -611,13 +618,13 @@ if (isset($_SESSION['logged_user'])) {
 								get_db_list($pdo, 'Hardware', 'category', '5', 'description');
 							?>
 						</select>
-						<input type="text" class="input-group-text" name="description_c5_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="description_manually_c5" placeholder="Ручной ввод">
 					</td>
 					<td>
 						<select class="custom-select" name="feature_c5" id="feature_c5">
 							<option value=""> Значение
 						</select>
-						<input type="text" class="input-group-text" name="feature_c5_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="feature_manually_c5" placeholder="Ручной ввод">
 					</td>
 					<td colspan="2">
 						<select class="custom-select" name="hw_note_c5" id="hw_note_c5">
@@ -630,17 +637,17 @@ if (isset($_SESSION['logged_user'])) {
 				<tr>
 					<th scope="row">Принтер</th>
 					<td colspan="2">
-						<select class="custom-select" name="hw_name_c6" id="hw_name_c6">
+						<select class="custom-select" name="description_c6" id="description_c6">
 							<option value=""> Выберите модель
 							<?php
 								get_db_list($pdo, 'Periphery', 'category', '6', 'pd_model');
 							?>
 						</select>
-						<input type="text" class="input-group-text" name="hw_name_c6_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="hw_name_manually_c6" placeholder="Ручной ввод">
 					</td>
 					<th style="color: blue">инв.номер:</th>
 					<td colspan="3">
-						<input type="text" class="input-group-text" name="pd_inv_num_c6" placeholder="Номер">
+						<input type="text" class="input-group-text" name="pd_inv_num_c6" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
 					</td>
 				</tr>
 
@@ -658,21 +665,24 @@ if (isset($_SESSION['logged_user'])) {
 										get_db_list($pdo, 'Periphery', 'category', '7', 'pd_name');
 									?>
 								</select>
-								<input type="text" class="input-group-text" name="pd_name_c7_manually" placeholder="Ручной ввод">
+								<input type="text" class="input-group-text" name="pd_name_manually_c7" placeholder="Ручной ввод">
 							</td>
 							<td colspan="2">
 								<select class="custom-select" name="pd_model_c7" id="pd_model_c7">
 									<option value="">Выберите описание
 								</select>
-								<input type="text" class="input-group-text" name="pd_model_c7_manually" placeholder="Ручной ввод">
+								<input type="text" class="input-group-text" name="pd_model_manually_c7" placeholder="Ручной ввод">
 							</td>
 							<td>
 								<select class="custom-select" name="feature_c7" id="feature_c7">
 									<option value="">Значение
 								</select>
-								<input type="text" class="input-group-text" name="feature_c7_manually" placeholder="Ручной ввод">
+								<input type="text" class="input-group-text" name="feature_manually_c7" placeholder="Ручной ввод">
 							</td>
-							<td></td>
+							<td>
+								<p style="color: blue; margin: 0; padding: 0">инв.номер:</p>
+								<input type="text" class="input-group-text" name="pd_inv_num_c7" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
+							</td>
 							<td>
 								<button type="button" class="del btn btn-danger" name="del_btn_c7">Удалить</button>
 							</td>
@@ -757,6 +767,7 @@ if (isset($_SESSION['logged_user'])) {
 
 		</table>
 		<input type="submit" class="btn btn-primary" name="save_passport" value="Сохранить паспорт">
+		</form>
 	</div>
 </body>
 

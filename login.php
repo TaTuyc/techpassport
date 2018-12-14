@@ -1,6 +1,6 @@
 <?php 
 	include 'action.php';
-    $pdo = connect_db('root', '62996326');
+    $pdo = connect_db();
 	
 	// нельзя напрямую обращаться к POST-переменным
 	$data = $_POST;

@@ -1,6 +1,6 @@
 <?php
 include 'action.php';
-$pdo = connect_db('root', '62996326');
+$pdo = connect_db();
 if (isset($_POST["mb_model"]) && !empty($_POST["mb_model"])) {
    get_db_list($pdo, 'Hardware', 'hw_name', 'Системная плата', 'hw_note');
 } elseif (isset($_POST["ram_type"]) && !empty($_POST["ram_type"])) {
