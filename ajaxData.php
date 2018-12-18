@@ -1,5 +1,6 @@
 <?php
 include 'action.php';
+include 'fillprint.php';
 $pdo = connect_db();
 if (isset($_POST["mb_model"]) && !empty($_POST["mb_model"])) {
    get_db_list($pdo, 'Hardware', 'hw_name', 'Системная плата', 'hw_note');
@@ -48,6 +49,20 @@ if (isset($_POST["mb_model"]) && !empty($_POST["mb_model"])) {
       }
    } elseif ($_POST["is_call"] == '3n') {
       get_db_list($pdo, 'Hardware', 'description', $parent_value, 'hw_note');
+   }
+} elseif (isset($_POST["print_data"])) {
+   if ($_POST["print_data"] == 'hw') {
+      get_data_array($pdo, $_POST["ID_pc"], 'Installed_hardware', 'ID_hw');
+   } elseif ($_POST["print_data"] == 'hw_id') {
+      get_data_hw_row($pdo, $_POST["ID_hw"]);
+   } elseif ($_POST["print_data"] == 'pd') {
+      get_data_array($pdo, $_POST["ID_pc"], 'Periphery', 'ID_pd');
+   } elseif ($_POST["print_data"] == 'pd_id') {
+      get_data_pd_row($pdo, $_POST["ID_pd"]);
+   } elseif ($_POST["print_data"] == 'sw') {
+      get_data_array($pdo, $_POST["ID_pc"], 'Installed_software', 'ID_sw');
+   } elseif ($_POST["print_data"] == 'sw_id') {
+      get_data_sw_row($pdo, $_POST["ID_sw"]);
    }
 }
 ?>

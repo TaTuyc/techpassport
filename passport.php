@@ -630,7 +630,7 @@ if (isset($_SESSION['logged_user'])) {
 						<select class="custom-select" name="hw_note_c5" id="hw_note_c5">
 							<option value=""> Примечание
 						</select>
-						<input type="text" class="input-group-text" name="hw_note_c5" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="hw_note_manually_c5" placeholder="Ручной ввод">
 					</td>
 				</tr>
 
