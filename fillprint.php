@@ -94,4 +94,45 @@
         }
         print json_encode($result_array);
     }
+    /*
+    function get_all_pc ($pdo) {
+        $sql = 
+        "SELECT * FROM Computer";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row[$result_column];
+        }
+        print json_encode($result_array);
+    }*/
+    
+    function get_passport_list($pdo, $id_page, $portion_size) {
+        $cnt = 0;
+        $min_cnt = ($id_page - 1) * $portion_size;
+        /*$max_cnt = $id_page * $portion_size - 1;
+        $max_lim = $pdo->query("SELECT COUNT(*) FROM Computer")->fetchColumn();
+        if ($max_cnt > $max_lim) {
+            $max_cnt = $max_lim;
+        }*/
+        $sql =
+        "SELECT * FROM Computer LIMIT " . $min_cnt . "," . $portion_size;
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['pc_name'];
+            $result_array[] = get_data_via_2id($pdo, $row['ID_pc'], 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
+            $result_array[] = $row['inventory_number'];
+            $cnt++;
+        }
+        print json_encode($result_array);
+    }
+    
+    function get_page_list($pdo, $id_page) {
+        $result = array();
+        $result[] = $pdo->query("SELECT COUNT(*) FROM Computer")->fetchColumn();
+        $result[] = $_SESSION['portion_size'];
+        print json_encode($result);
+    }
 ?>

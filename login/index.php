@@ -1,5 +1,5 @@
 <?php 
-	include 'action.php';
+	include '../action.php';
     $pdo = connect_db();
 	
 	// нельзя напрямую обращаться к POST-переменным
@@ -11,8 +11,11 @@
 			if ($data['pswrd'] == find_password($pdo, $user)) {
 				//если пароль совпадает, то нужно авторизовать пользователя
 				$_SESSION['logged_user'] = $user;
+				if (!isset($_SESSION['portion_size'])) {
+					$_SESSION['portion_size'] = 20;
+				}
 				session_write_close();
-				header('Location: ./passport.php');
+				header('Location: ../passport/index.php');
 				exit();
 			} else {
 				$errors[] = 'Неверный пароль!';
@@ -28,12 +31,12 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>Вход</title>
-		<link rel="stylesheet" href="css/login.css">
+		<link rel="stylesheet" href="../css/login.css">
 	</head>
 
 	<body>
 
-		<form id="login" action="login.php" method="post">
+		<form id="login" action="./index.php" method="post">
 		    <h1>Вход в систему</h1>
 			<?php
 				if (!empty($errors)) {

@@ -63,6 +63,15 @@ if (isset($_POST["mb_model"]) && !empty($_POST["mb_model"])) {
       get_data_array($pdo, $_POST["ID_pc"], 'Installed_software', 'ID_sw');
    } elseif ($_POST["print_data"] == 'sw_id') {
       get_data_sw_row($pdo, $_POST["ID_sw"]);
+   } elseif ($_POST["print_data"] == 'page_id') {
+      get_passport_list($pdo, $_POST["ID_page"], $_SESSION['portion_size']);
+   } elseif ($_POST["print_data"] == 'page_list') {
+      get_page_list($pdo, $_POST["ID_page"]);
+   }
+} elseif (isset($_POST["update_cookie"])) {
+   if ($_POST["update_cookie"] == 'portion_size') {
+      $_SESSION['portion_size'] = $_POST["portion_size"];
+      print json_encode($_SESSION['portion_size']);
    }
 }
 ?>

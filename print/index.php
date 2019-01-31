@@ -1,9 +1,9 @@
 <?php
-include 'action.php';
-include 'fillprint.php';
+include '../action.php';
+include '../fillprint.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
-	header('Location: ./login.php');
+	header('Location: ../login/index.php');
 }
 if (isset($_SESSION['logged_user'])) {
 ?>
@@ -17,17 +17,17 @@ if (isset($_SESSION['logged_user'])) {
 	<!--Тип Кодировки-->
 	<title>Паспорт.</title>
 	<!--Заголовок-->
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<script type="text/javascript" src="script/jquery.js"></script>
-	<script type="text/javascript" src="script/parsing.js"></script>
-	<script type="text/javascript" src="script/dynamicTable.js"></script>
-	<script type="text/javascript" src="jquery/jquerymin.js"></script>
+	<link rel="stylesheet" href="../css/bootstrap.css">
+	<script type="text/javascript" src="../script/jquery.js"></script>
+	<script type="text/javascript" src="../script/parsing.js"></script>
+	<script type="text/javascript" src="../script/dynamicTable.js"></script>
+	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
     <script type="text/javascript">
 		
 		function get_hw_item(id_hw) {
 			$.ajax({
 				type: 'POST',
-				url: 'ajaxData.php',
+				url: '../ajaxData.php',
 				data: {
 					print_data: 'hw_id',
 					ID_hw: id_hw},
@@ -82,7 +82,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_pd_item(id_pd) {
 			$.ajax({
 				type: 'POST',
-				url: 'ajaxData.php',
+				url: '../ajaxData.php',
 				data: {
 					print_data: 'pd_id',
 					ID_pd: id_pd},
@@ -118,7 +118,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_sw_item(id_sw) {
 			$.ajax({
 				type: 'POST',
-				url: 'ajaxData.php',
+				url: '../ajaxData.php',
 				data: {
 					print_data: 'sw_id',
 					ID_sw: id_sw},
@@ -159,7 +159,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_hw_array(id_pc) {
 			$.ajax({
 				type: 'POST',
-				url: 'ajaxData.php',
+				url: '../ajaxData.php',
 				data: {
 					print_data: 'hw',
 					ID_pc: id_pc},
@@ -176,7 +176,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_pd_array(id_pc) {
 			$.ajax({
 				type: 'POST',
-				url: 'ajaxData.php',
+				url: '../ajaxData.php',
 				data: {
 					print_data: 'pd',
 					ID_pc: id_pc},
@@ -192,7 +192,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_sw_array(id_pc) {
 			$.ajax({
 				type: 'POST',
-				url: 'ajaxData.php',
+				url: '../ajaxData.php',
 				data: {
 					print_data: 'sw',
 					ID_pc: id_pc},
@@ -211,7 +211,7 @@ if (isset($_SESSION['logged_user'])) {
 	</script>
 	<?php
         $pdo = connect_db();
-        $ID_pc = 29;
+        $ID_pc = 33;
     ?>
 	<style>
 		* {
@@ -456,6 +456,17 @@ if (isset($_SESSION['logged_user'])) {
 
 <?php
 } else {
-	echo "Доступ запрещён. Вы можете <a href=\"./login.php\"> авторизоваться</a>.";
+	echo '<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Паспорт.</title>
+	</head>
+	<body style="background-color: #c0c0c0">' .
+	'<div style="margin-top: 18%; width: 80%; margin-left: 10%; background-color: #eeeeee; border-radius: 10pt">
+	<p>&nbsp;
+	<p style="font-size:30pt; color: #800000; text-align: center">Доступ запрещён. Вы можете <a href="../login/index.php"> авторизоваться</a>.<p>&nbsp;</div>' .
+	'</body>
+	</html>';
 }
 ?>
