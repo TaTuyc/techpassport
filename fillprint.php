@@ -1,4 +1,5 @@
 <?php
+    $pdo = new PDO('mysql:host=localhost;dbname=Passport;charset=utf8', 'root', '62996326');
     // разворачивание данных для создания отчёта
     function get_data_via_id ($pdo, $id_pc, $table_name, $column_name) {
         $sql =
@@ -124,6 +125,7 @@
             $result_array[] = $row['pc_name'];
             $result_array[] = get_data_via_2id($pdo, $row['ID_pc'], 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
             $result_array[] = $row['inventory_number'];
+            $result_array[] = $row['ID_pc'];
             $cnt++;
         }
         print json_encode($result_array);
@@ -134,5 +136,29 @@
         $result[] = $pdo->query("SELECT COUNT(*) FROM Computer")->fetchColumn();
         $result[] = $_SESSION['portion_size'];
         print json_encode($result);
+    }
+    
+    if (isset($_POST['name'])) {
+        if ($_POST['name'] == 'manufacture_date') {
+            echo get_data_via_id($pdo, $_POST['id'], 'Computer', 'manufacture_date');
+        } elseif ($_POST['name'] == 'buying_method') {
+            echo get_data_via_2id($pdo, $_POST['id'], 'Computer', 'manufacture_method', 'Manufacture_method', 'ID_mm', 'method');
+        } elseif ($_POST['name'] == 'balance_date_bookkeeping') {
+            echo get_data_via_id($pdo, $_POST['id'], 'Computer', 'bookkeeping_balance_sheet');
+        } elseif ($_POST['name'] == 'balance_num') {
+            echo get_data_via_id($pdo, $_POST['id'], 'Computer', 'doc_balance_num');
+        } elseif ($_POST['name'] == 'balance_date') {
+            echo get_data_via_id($pdo, $_POST['id'], 'Computer', 'doc_balance_date');
+        } elseif ($_POST['name'] == 'pc_name') {
+            echo get_data_via_id($pdo, $_POST['id'], 'Computer', 'pc_name');
+        } elseif ($_POST['name'] == 'pc_place') {
+            echo get_data_via_2id($pdo, $_POST['id'], 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
+        } elseif ($_POST['name'] == 'position') {
+            echo get_data_via_2id($pdo, $_POST['id'], 'Computer', 'installation_site_position', 'Worker', 'ID_worker', 'position');
+        } elseif ($_POST['name'] == 'pc_inv_num') {
+            echo get_data_via_id($pdo, $_POST['id'], 'Computer', 'inventory_number');
+        } elseif ($_POST['name'] == 'responsible_person') {
+            echo get_data_via_2id($pdo, $_POST['id'], 'Computer', 'responsible', 'Worker', 'ID_worker', 'full_name');
+        }
     }
 ?>

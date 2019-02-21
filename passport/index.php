@@ -22,17 +22,19 @@ if (isset($_SESSION['logged_user'])) {
 	<script type="text/javascript" src="../script/dynamicTable.js"></script>
 	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
     <script type="text/javascript">
-		const DELAY = 200;
-		qq = true;
+		qq_func = function(){};
+		var buff_arr_names = [];
+		var buff_arr_data = [];
 		
 		max_index = 0;
 		
 		function eventChange(parent_id, call_type, name_, category_, index_) {
 			var parent_var = $('#' + parent_id).val();
 			if (parent_var != "") {
-				$.ajax({
+				var wow = $.ajax({
 					type: 'POST',
 					url: '../ajaxData.php',
+					async: false,
 					data: {
 						is_call: call_type,
 						parent: parent_var,
@@ -40,40 +42,48 @@ if (isset($_SESSION['logged_user'])) {
 						category: category_,
 						index: index_
 					}, success: function(html){
-						//console.log(call_type);
-						//console.log(parent_var);
 						if (call_type == 1) {
 							$('#description_c' + category_ + '_elem' + index_).html(html);
+							param = 'description_c' + category_ + '_elem' + index_;
+							eventChange(param, 'f', 'description', category_, index_);
+							eventChange(param, 'n', 'description', category_, index_);
 						} else if (call_type == 'f') {
 							$('#feature_c' + category_ + '_elem' + index_).html(html);
 						} else if (call_type == 'n') {
 							$('#hw_note_c' + category_ + '_elem' + index_).html(html);
 						} else if (call_type == '1_pd') {
 							$('#pd_model_c' + category_ + '_elem' + index_).html(html);
+							eventChange('pd_model_c' + category_ + '_elem' + index_, 'f_pd', name_, category_, index_);
 						} else if (call_type == 'f_pd') {
 							$('#feature_c' + category_ + '_elem' + index_).html(html);
 						} else if (call_type == 2) {
 							$('#licence_type_elem' + index_).html(html);
+							eventChange(parent_id, 'v_sw', name_, category_, index_);
+							eventChange(parent_id, 'n_sw', name_, category_, index_);
 						} else if (call_type == 'v_sw') {
 							$('#version_elem' + index_).html(html);
 						} else if (call_type == 'n_sw') {
 							$('#sw_note_elem' + index_).html(html);
 						} else if (call_type == 3) {
 							$('#feature_c' + category_).html(html);
+							eventChange('description_c' + category_, '3n', name_, category_, null);
 						} else if (call_type == '3n') {
 							$('#hw_note_c' + category_).html(html);
 						}
 					}
-				});
+				}).responseText;
 			}else{
 				if (call_type == 1) {
 					$('#description_c' + category_ + '_elem' + index_).html('<option value="">Выберите модель</option>');
+					$('#feature_c' + category_ + '_elem' + index_).html('<option value="">Значение</option>');
+					$('#hw_note_c' + category_ + '_elem' + index_).html('<option value="">Примечание</option>');
 				} else if (call_type == 'f') {
 					$('#feature_c' + category_ + '_elem' + index_).html('<option value="">Значение</option>');
 				} else if (call_type == 'n') {
 					$('#hw_note_c' + category_ + '_elem' + index_).html('<option value="">Примечание</option>');
 				} else if (call_type == '1_pd') {
 					$('#pd_model_c' + category_ + '_elem' + index_).html('<option value="">Выберите описание</option>');
+					$('#feature_c' + category_ + '_elem' + index_).html('<option value="">Значение</option>');
 				} else if (call_type == 'f_pd') {
 					$('#feature_c' + category_ + '_elem' + index_).html('<option value="">Значение</option>');
 				} else if (call_type == 2) {
@@ -84,143 +94,449 @@ if (isset($_SESSION['logged_user'])) {
 					$('#sw_note_elem' + index_).html('<option value="">Примечание</option>');
 				} else if (call_type == 3) {
 					$('#feature_c' + category_).html('<option value="">Значение</option>');
-					//$('#hw_note_c' + category_ + '_elem' + index_).html('<option value="">Примечание</option>');
+					$('#hw_note_c' + category_).html('<option value="">Примечание</option>');
 				} else if (call_type == '3n') {
 					$('#hw_note_c' + category_).html('<option value="">Примечание</option>');
 				}
 			}
 		}
 		
-		function childEvent(parent_id, call_type, name_, category_, index_) {
-			var del = DELAY * 2;
-			setTimeout(function() {
-				$('#' + parent_id).on('change.namespace2', eventChange(parent_id, call_type, name_, category_, index_));
-			}, del);
+		function set_value(id, data) {
+			if (id != null) {
+				document.getElementById(id).value = data;
+			}
+		}
+		
+		function get_available_id(name) {
+			var elems = document.getElementsByTagName('*');
+			var buff;
+			for (i = 0; i < elems.length; i++) {
+				buff = elems[i].getAttribute('name');
+				if (buff != null) {
+					if (buff.indexOf(name) != -1) {
+						if ($('#' + buff).val() == '') {
+							return buff;
+						}
+					}
+				}
+			}
+			buff = getCategory(name);
+			if (name == 'sw_name') {
+				document.getElementById('add_btn_sw').click();
+			} else {
+				document.getElementById('add_btn_c' + buff).click();
+			}			
+			return get_available_id(name);
+		}
+		
+		function set_hw_item(data) {
+			var category = data[4];
+			buff = get_available_id('hw_name_c' + category);
+			buff_elem = getIndex(buff);
+			set_value(buff, data[0]);
+			$('#' + buff).trigger('change');
+			buff = 'description_c' + category + '_elem' + buff_elem;
+			buff1 = 'feature_c' + category + '_elem' + buff_elem;
+			buff2 = 'hw_note_c' + category + '_elem' + buff_elem;
+			set_value(buff, data[1]);
+			$('#' + buff).trigger('change');
+			if (document.getElementById(buff1) != null) {
+				set_value(buff1, data[2]);
+			}
+			set_value(buff2, data[3]);
+			if (category == 2) {
+				document.getElementById('div_pd_inv_num_c2_elem' + buff_elem).style.display = "none";
+				document.getElementById('switch_btn_c2_elem' + buff_elem).style.display = "none";
+			}
+		}
+		
+		function get_hw_item(id_hw) {
+			var buff;
+			var wow = $.ajax({
+				type: 'POST',
+				url: '../ajaxData.php',
+				async: false,
+				data: {
+					print_data: 'hw_id',
+					ID_hw: id_hw},
+				dataType: "json",
+				success: function(data){
+					var buff;
+					for (i = 0; i < 5; i++) {
+						if (data[i] == 'null') {
+							data[i] = '';
+						}
+					}
+					if (data[4] == '0') {
+						if (data[0] == 'Системная плата') {
+							set_value('mb_model', data[1]);
+							$('#mb_model').trigger('change');
+							set_value('mb_note', data[3]);
+						} else if (data[0] == 'Оперативная память') {
+							set_value('ram_type', data[1]);
+							$('#ram_type').trigger('change');
+							set_value('ram_capacity', data[2]);
+							set_value('ram_note', data[3]);
+						} else if (data[0] == 'ЦП') {
+							set_value('cpu_model', data[1]);
+							$('#cpu_model').trigger('change');
+							set_value('cpu_frequency', data[2]);
+							set_value('cpu_note', data[3]);
+						}
+						// размещаем данные в зависимости от категории
+					} else if (data[4] == '1' || data[4] == '2' || data[4] == '3' || data[4] == '4') {
+						set_hw_item(data);
+					} else if (data[4] == '5') {
+						set_value('description_c5', data[1]);
+						$('#description_c5').trigger('change');
+						set_value('feature_c5', data[2]);
+						set_value('hw_note_c5', data[3]);
+					}
+				}
+			}).responseText;
+		}
+		
+		function get_hw_array(id_pc) {
+			var wow = $.ajax({
+				type: 'POST',
+				url: '../ajaxData.php',
+				async: false,
+				data: {
+					print_data: 'hw',
+					ID_pc: id_pc},
+				dataType: "json",
+				success: function(data){
+					data.forEach(function(item, i, data){
+						get_hw_item(item);
+					});
+				}
+			}).responseText;
+		}
+		
+		function set_pd_item(data) {
+			var category = data[4];
+			if (category == 2) {
+				buff = get_available_id('hw_name_c2');
+				buff_elem = getIndex(buff);
+				set_value(buff, data[0]);
+				$('#' + buff).trigger('change');
+				buff = 'description_c2_elem' + buff_elem;
+				buff1 = 'feature_c2_elem' + buff_elem;
+				buff2 = 'hw_note_c2_elem' + buff_elem;
+				buff3 = 'pd_inv_num_c2_elem' + buff_elem;
+				set_value(buff, data[1]);
+				$('#' + buff).trigger('change');
+				set_value(buff1, '');
+				set_value(buff2, '');
+				set_value(buff3, data[3]);
+				document.getElementById('div_feature_c2_elem' + buff_elem).style.display = "none";
+				document.getElementById('div_hw_note_c2_elem' + buff_elem).style.display = "none";
+				document.getElementById('div_pd_inv_num_c2_elem' + buff_elem).style.display = "block";
+				document.getElementById('switch_btn_c2_elem' + buff_elem).style.display = "none";
+			} else if (category == 6) {
+				set_value('description_c6', data[1]);
+				set_value('pd_inv_num_c6', data[3]);
+			} else if (category == 7) {
+				buff = get_available_id('pd_name_c7');
+				buff_elem = getIndex(buff);
+				set_value(buff, data[0]);
+				$('#' + buff).trigger('change');
+				buff = 'pd_model_c7_elem' + buff_elem;
+				buff1 = 'feature_c7_elem' + buff_elem;
+				buff2 = 'pd_inv_num_c7_elem' + buff_elem;
+				set_value(buff, data[1]);
+				$('#' + buff).trigger('change');
+				set_value(buff1, data[2]);
+				set_value(buff2, data[3]);
+			}
+		}
+		
+		function get_pd_item(id_pd) {
+			var x = $.ajax({
+				type: 'POST',
+				url: '../ajaxData.php',
+				async: false,
+				data: {
+					print_data: 'pd_id',
+					ID_pd: id_pd},
+				dataType: "json",
+				success: function(data){
+					for (i = 0; i < 5; i++) {
+						if (data[i] == 'null') {
+							data[i] = '';
+						}
+					}
+					if (data[4] == '2') {
+						set_pd_item(data);	
+					} else if (data[4] == '6') {
+						set_pd_item(data);
+					} else if (data[4] == '7') {
+						set_pd_item(data);
+					}
+					//console.log(data[0] + '   ' + data[1] + '   ' + data[2] + '   ' + data[3] + '   ' + data[4]);
+				}
+			}).responseText;
+			return;
+		}
+		
+		function get_pd_array(id_pc) {
+			var x = $.ajax({
+				type: 'POST',
+				url: '../ajaxData.php',
+				async: false,
+				data: {
+					print_data: 'pd',
+					ID_pc: id_pc},
+				dataType: "json",
+				success: function(data){
+					data.forEach(function(item, i, data){
+						get_pd_item(item);
+					});
+				}
+			}).responseText;
+		}
+		
+		function get_sw_item(id_sw) {
+			var x = $.ajax({
+				type: 'POST',
+				url: '../ajaxData.php',
+				async: false,
+				data: {
+					print_data: 'sw_id',
+					ID_sw: id_sw},
+				dataType: "json",
+				success: function(data){
+					for (i = 0; i < 5; i++) {
+						if (data[i] == 'null') {
+							data[i] = '';
+						}
+					}
+					buff = get_available_id('sw_name');
+					buff_elem = getIndex(buff);
+					set_value(buff, data[0]);
+					$('#' + buff).trigger('change');
+					buff = 'licence_type_elem' + buff_elem;
+					buff1 = 'licence_num_elem' + buff_elem;
+					buff2 = 'licence_key_elem' + buff_elem;
+					buff3 = 'version_elem' + buff_elem;
+					buff4 = 'sw_note_elem' + buff_elem;
+					set_value(buff, data[1]);
+					set_value(buff1, data[2]);
+					set_value(buff2, data[3]);
+					set_value(buff3, data[4]);
+					set_value(buff4, data[5]);
+					//console.log(data[0] + ']   [' + data[1] + ']   [' + data[2] + ']   [' + data[3] + ']   [' + data[4] + ']   [' + data[5]);
+				}
+			}).responseText;
+		}
+		
+		function get_sw_array(id_pc) {
+			var x = $.ajax({
+				type: 'POST',
+				url: '../ajaxData.php',
+				async: false,
+				data: {
+					print_data: 'sw',
+					ID_pc: id_pc},
+				dataType: "json",
+				success: function(data){
+					data.forEach(function(item, i, data){
+						get_sw_item(item);
+					});
+				}
+			}).responseText;
+		}
+		
+		function get_data_via_id(id_, name_) {
+			var wow = $.ajax({
+				type: 'POST',
+				url: '../fillprint.php',
+				async: false,
+				data: {
+					id: id_,
+					name: name_
+				}, success: function(html){
+					//document.getElementById(name_).value = html + "-01-01";
+					if (name_ == 'manufacture_date') {
+						document.getElementsByName(name_)[0].value = html + "-01-01";
+					} else if (name_ == 'buying_method') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'balance_date_bookkeeping') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'balance_num') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'balance_date') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'pc_name') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'pc_place') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'position') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'pc_inv_num') {
+						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'responsible_person') {
+						document.getElementsByName(name_)[0].value = html;
+					}
+					
+				}
+			}).responseText;
 		}
 		
 		$(document).ready(function(){
-			/* Зависимости для селекторов, материнская плата */
-			$('#mb_model').on('change',function(){
-				var parent_var = $(this).val();
+					
+		});
+		
+		$(document).on('change', function(e) {
+			var parent_id = e.target.id;
+			var parent_var = $('#' + parent_id).val();
+			var x;
+			//console.log(parent_id);
+			if (parent_id == 'mb_model') {
 				if(parent_var != ""){
-					$.ajax({
+					x = $.ajax({
 						type:'POST',
 						url:'../ajaxData.php',
+						async: false,
 						data: {
 							mb_model: parent_var
 						}, success:function(html){
 							$('#mb_note').html(html);
 						}
-					});
+					}).responseText;
 				}else{
 					$('#mb_note').html('<option value="">Примечание</option>'); 
 				}
-			});
-			
-			/* Зависимости для селекторов, оперативная память */
-			$('#ram_type').on('change',function(){
-				var parent_var = $(this).val();
+			} else if (parent_id == 'ram_type') {
 				if(parent_var != ""){
-					$.ajax({
+					x = $.ajax({
 						type:'POST',
 						url:'../ajaxData.php',
+						async: false,
 						data: {
 							ram_type: parent_var,
 							need: 'rc'
 						}, success:function(html){
 							$('#ram_capacity').html(html);
 						}
-					});
-					$.ajax({
+					}).responseText;
+					x = $.ajax({
 						type:'POST',
 						url:'../ajaxData.php',
+						async: false,
 						data: {
 							ram_type: parent_var,
 							need: 'rn'
 						}, success:function(html){
 							$('#ram_note').html(html);
 						}
-					}); 
+					}).responseText; 
 				}else{
 					$('#ram_capacity').html('<option value="">Выберите объём</option>');
 					$('#ram_note').html('<option value="">Примечание</option>'); 
 				}
-			});
-			
-			/* Зависимости для селекторов, процессор */
-			$('#cpu_model').on('change',function(){
-				var parent_var = $(this).val();
+			} else if (parent_id == 'cpu_model') {
 				if(parent_var != ""){
-					$.ajax({
+					x = $.ajax({
 						type:'POST',
 						url:'../ajaxData.php',
+						async: false,
 						data: {
 							cpu_model: parent_var,
 							need: 'cf'
 						}, success:function(html){
 							$('#cpu_frequency').html(html);
 						}
-					});
-					$.ajax({
+					}).responseText;
+					x = $.ajax({
 						type:'POST',
 						url:'../ajaxData.php',
+						async: false,
 						data: {
 							cpu_model: parent_var,
 							need: 'cn'
 						}, success:function(html){
 							$('#cpu_note').html(html);
 						}
-					}); 
+					}).responseText; 
 				}else{
 					$('#cpu_frequency').html('<option value="">Выберите частоту</option>');
 					$('#cpu_note').html('<option value="">Примечание</option>'); 
 				}
-			});			
-		});
-		
-		$(document).on('change', function(e) {
-            //console.log(e.target.id);
-			var parent_id = e.target.id;
-			console.log(e.target);
-			var name_ = getName(parent_id);
-			var category_ = getCategory(parent_id);
-			var index_ = getIndex(parent_id);
-			if (getTypeDynamicRow(parent_id) == 1) {
-				if (name_ == 'hw_name') {
-					eventChange(parent_id, '1', name_, category_, index_);
-					param = 'description_c' + category_ + '_elem' + index_;
-					childEvent(param, 'f', 'description', category_, index_);
-					childEvent(param, 'n', 'description', category_, index_);
-					//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
-				} else if (name_ == 'description') {
-					//console.log(parent_id + '//////////  и где?');
-					childEvent(parent_id, 'f', name_, category_, index_);
-					childEvent(parent_id, 'n', name_, category_, index_);
-					//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'f', name_, category_, index_));
-					//$('#' + parent_id).on('change.namespace3', eventChange(parent_id, 'n', name_, category_, index_));
-				} else if (name_ == 'pd_name') {
-					$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '1_pd', name_, category_, index_));
-					childEvent('pd_model_c' + category_ + '_elem' + index_, 'f_pd', name_, category_, index_);
-					//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
-				} else if (name_ == 'pd_model') {
-					childEvent(parent_id, 'f_pd', name_, category_, index_);
-				}
-			} else if (getTypeDynamicRow(parent_id) == 2) {
-				if (name_ == 'sw_name') {
-					eventChange(parent_id, '2', name_, category_, index_);
-					eventChange(parent_id, 'v_sw', name_, category_, index_);
-					eventChange(parent_id, 'n_sw', name_, category_, index_);
-					//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'v_sw', name_, category_, '-1'));
-					//$('#' + parent_id).on('change.namespace2', eventChange(parent_id, 'n_sw', name_, category_, '-1'));
-				}
-			} else if (getTypeDynamicRow(parent_id) == 3) {
-				if (name_ == 'description') {
-					//console.log('id = ' + parent_id + '     name = ' + name_ + '    category = ' + category_ + '    index = ' + index_);
-					$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '3', name_, category_, '-1'));
-					$('#' + parent_id).on('change.namespace2', eventChange(parent_id, '3n', name_, category_, '-1'));
+			} else {
+				//console.log(e.target);
+				var name_ = getName(parent_id);
+				var category_ = getCategory(parent_id);
+				var index_ = getIndex(parent_id);
+				if (getTypeDynamicRow(parent_id) == 1) {
+					if (name_ == 'hw_name') {
+						eventChange(parent_id, '1', name_, category_, index_);
+					} else if (name_ == 'description') {
+						eventChange(parent_id, 'f', name_, category_, index_);
+						eventChange(parent_id, 'n', name_, category_, index_);
+					} else if (name_ == 'pd_name') {
+						eventChange(parent_id, '1_pd', name_, category_, index_);
+					} else if (name_ == 'pd_model') {
+						eventChange(parent_id, 'f_pd', name_, category_, index_);
+					}
+				} else if (getTypeDynamicRow(parent_id) == 2) {
+					if (name_ == 'sw_name') {
+						eventChange(parent_id, '2', name_, category_, index_);
+					}
+				} else if (getTypeDynamicRow(parent_id) == 3) {
+					if (name_ == 'description') {
+						eventChange(parent_id, '3', name_, category_, null);
+					}
 				}
 			}
 		});
+		
+		function get_old_page(id) {
+			get_data_via_id(id, 'manufacture_date');
+			get_data_via_id(id, 'buying_method');
+			get_data_via_id(id, 'balance_date_bookkeeping');
+			get_data_via_id(id, 'balance_num');
+			get_data_via_id(id, 'balance_date');
+			get_data_via_id(id, 'pc_name');
+			get_data_via_id(id, 'pc_place');
+			get_data_via_id(id, 'position');
+			get_data_via_id(id, 'pc_inv_num');
+			get_data_via_id(id, 'responsible_person');
+			get_hw_array(id);
+			get_pd_array(id);
+			get_sw_array(id);
+			
+			//console.log(get_RID());
+			//document.getElementById('add_btn_c1').click();
+			/*get_data_via_id(id, 'balance_date_bookkeeping');
+			get_data_via_id(id, 'balance_date_bookkeeping');
+			get_data_via_id(id, 'balance_date_bookkeeping');
+			get_data_via_id(id, 'balance_date_bookkeeping');
+			get_data_via_id(id, 'balance_date_bookkeeping');
+			get_data_via_id(id, 'balance_date_bookkeeping');
+			get_data_via_id(id, 'balance_date_bookkeeping');*/
+			
+		}
+		
+		$(document).on('click', function(e) {
+			var id = e.target.id;
+			var name = getName(id);
+			if (name == 'switch_btn') {
+				var category = getCategory(id);
+				var index = getIndex(id);
+				if (document.getElementById('div_feature_c' + category + '_elem' + index).style.display == "none") {
+					document.getElementById('div_feature_c' + category + '_elem' + index).style.display = "block";
+					document.getElementById('div_hw_note_c' + category + '_elem' + index).style.display = "block";
+					document.getElementById('div_pd_inv_num_c' + category + '_elem' + index).style.display = "none";
+				} else {
+					document.getElementById('div_feature_c' + category + '_elem' + index).style.display = "none";
+					document.getElementById('div_hw_note_c' + category + '_elem' + index).style.display = "none";
+					document.getElementById('div_pd_inv_num_c' + category + '_elem' + index).style.display = "block";
+				}
+			}
+		});
+		
+		//function switch_c2(btn_name)
 	</script>
 	<?php
         $pdo = connect_db();
@@ -257,7 +573,7 @@ if (isset($_SESSION['logged_user'])) {
 					<th scope="row">Дата производства:
 					</th>
 					<td colspan="2">
-						<input type="date" class="custom-select" name="manufacture_date">
+						<input type="date" class="custom-select" name="manufacture_date" id="manufacture_date">
 					</td>
 					<th scope="row">Способ производства:</th>
 					<td colspan="2">
@@ -267,7 +583,7 @@ if (isset($_SESSION['logged_user'])) {
                                 get_db_list($pdo, 'Manufacture_method', 'method', '', '');
                             ?>
 						</select>
-						<input type="text" class="input-group-text" name="buying_method_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="buying_method_manually" placeholder="Ручной ввод" maxlength="50">
 					</td>
 				</tr>
 
@@ -278,7 +594,7 @@ if (isset($_SESSION['logged_user'])) {
 					</td>
 					<th scope="row">№ и дата документа постановки на баланс</th>
 					<td colspan>
-						<input type="text" class="input-group-text" name="balance_num" placeholder="Введите номер">
+						<input type="text" class="input-group-text" name="balance_num" placeholder="Введите номер" maxlength="20" pattern="[0-9]{0,20}">
 					</td>
 					<td colspan>
 						<input type="date" class="custom-select" name="balance_date">
@@ -288,7 +604,7 @@ if (isset($_SESSION['logged_user'])) {
 				<tr>
 					<th scope="row">Имя рабочей станции</th>
 					<td colspan="2">
-						<input type="text" class="input-group-text" name="pc_name" placeholder="Имя">
+						<input type="text" class="input-group-text" name="pc_name" placeholder="Имя" required maxlength="20">
 					</td>
 					<th scope="row">Место установки</th>
 					<td>
@@ -322,7 +638,7 @@ if (isset($_SESSION['logged_user'])) {
                                 get_db_list($pdo, 'Worker', 'full_name', '', '');
                             ?>
 						</select>
-                        <input type="text" class="input-group-text" name="responsible_person_manually" placeholder="Ручной ввод">
+                        <input type="text" class="input-group-text" name="responsible_person_manually" placeholder="Ручной ввод" maxlength="200">
 					</td>
 				</tr>
 			</tbody>
@@ -428,25 +744,25 @@ if (isset($_SESSION['logged_user'])) {
                                     get_db_list($pdo, 'Hardware', 'category', '1', 'hw_name');
                                 ?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_manually_c1" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c1" placeholder="Ручной ввод" maxlength="30">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c1" id="description_c1">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_manually_c1" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c1" placeholder="Ручной ввод" maxlength="100">
 						</td>
 						<td>
 							<select class="custom-select" name="feature_c1" id="feature_c1">
 								<option value="">Значение
 							</select>
-							<input type="text" class="input-group-text" name="feature_manually_c1" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="feature_manually_c1" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
 						</td>
 						<td>
                             <select class="custom-select" name="hw_note_c1" id="hw_note_c1">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="hw_note_manually_c1" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_note_manually_c1" placeholder="Ручной ввод" maxlength="100">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c1">Удалить</button>
@@ -454,7 +770,7 @@ if (isset($_SESSION['logged_user'])) {
 					</tr>
 					<tr>
 						<td colspan="6">
-							<button type="button" class="add btn btn-success" name="add_btn_c1">Добавить</button>
+							<button id="add_btn_c1" type="button" class="add btn btn-success" name="add_btn_c1">Добавить</button>
 						</td>
 					</tr>
 				</tbody>
@@ -478,27 +794,34 @@ if (isset($_SESSION['logged_user'])) {
                                     get_db_list_с2($pdo);
                                 ?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_manually_c2" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c2" placeholder="Ручной ввод" maxlength="30">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c2" id="description_c2">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_manually_c2" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c2" placeholder="Ручной ввод" maxlength="100">
 						</td>
 						<td>
-							<select class="custom-select" name="feature_c2" id="feature_c2">
-								<option value="">Значение
-							</select>
-							<input type="text" class="input-group-text" name="feature_manually_c2" placeholder="Ручной ввод">
-							<p style="color: blue; margin: 0; padding: 0">или инв.номер:</p>
-							<input type="text" class="input-group-text" name="pd_inv_num_c2" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
+							<div id="div_feature_c2">
+								<select class="custom-select" name="feature_c2" id="feature_c2">
+									<option value="">Значение
+								</select>
+								<input type="text" class="input-group-text" id="feature_manually_c2" name="feature_manually_c2" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
+							</div>
+							<div id="div_pd_inv_num_c2" style="display: none">
+								<p style="color: blue; margin: 0; padding: 0">инв.номер:</p>
+								<input type="text" class="input-group-text" id="pd_inv_num_c2" name="pd_inv_num_c2" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
+							</div>
+							<button id="switch_btn_c2" type="button" class="btn btn-switch" name="switch_btn_c2">Переключить</button>
 						</td>
 						<td>
-							<select class="custom-select" name="hw_note_c2" id="hw_note_c2">
-								<option value="">Примечание
-							</select>
-							<input type="text" class="input-group-text" name="hw_note_manually_c2" placeholder="Ручной ввод">
+							<div id="div_hw_note_c2">
+								<select class="custom-select" id="hw_note_c2" name="hw_note_c2">
+									<option value="">Примечание
+								</select>
+								<input type="text" class="input-group-text" id="hw_note_manually_c2" name="hw_note_manually_c2" placeholder="Ручной ввод" maxlength="100">
+							</div>
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c2">Удалить</button>
@@ -506,7 +829,7 @@ if (isset($_SESSION['logged_user'])) {
 					</tr>
 					<tr>
 						<td colspan="6">
-							<button type="button" class="add btn btn-success" name="add_btn_c2">Добавить</button>
+							<button id="add_btn_c2" type="button" class="add btn btn-success" name="add_btn_c2">Добавить</button>
 						</td>
 					</tr>
 				</tbody>
@@ -530,20 +853,20 @@ if (isset($_SESSION['logged_user'])) {
 									get_db_list($pdo, 'Hardware', 'category', '3', 'hw_name');
 								?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_manually_c3" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c3" placeholder="Ручной ввод" maxlength="30">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c3" id="description_c3">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_manually_c3" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c3" placeholder="Ручной ввод" maxlength="100">
 						</td>
 						<td></td>
 						<td>
 							<select class="custom-select" name="hw_note_c3" id="hw_note_c3">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="hw_note_manually_c3" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_note_manually_c3" placeholder="Ручной ввод" maxlength="100">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c3">Удалить</button>
@@ -551,7 +874,7 @@ if (isset($_SESSION['logged_user'])) {
 					</tr>
 					<tr>
 						<td colspan="6">
-							<button type="button" class="add btn btn-success" name="add_btn_c3">Добавить</button>
+							<button id="add_btn_c3" type="button" class="add btn btn-success" name="add_btn_c3">Добавить</button>
 						</td>
 					</tr>
 				</tbody>
@@ -575,25 +898,25 @@ if (isset($_SESSION['logged_user'])) {
 									get_db_list($pdo, 'Hardware', 'category', '4', 'hw_name');
 								?>
 							</select>
-							<input type="text" class="input-group-text" name="hw_name_manually_c4" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_name_manually_c4" placeholder="Ручной ввод" maxlength="30">
 						</td>
 						<td colspan="2">
 							<select class="custom-select" name="description_c4" id="description_c4">
 								<option value="">Выберите модель
 							</select>
-							<input type="text" class="input-group-text" name="description_manually_c4" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="description_manually_c4" placeholder="Ручной ввод" maxlength="100">
 						</td>
 						<td>
 							<select class="custom-select" name="feature_c4" id="feature_c4">
 								<option value="">Значение
 							</select>
-							<input type="text" class="input-group-text" name="feature_manually_c4" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="feature_manually_c4" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
 						</td>
 						<td>
 							<select class="custom-select" name="hw_note_c4" id="hw_note_c4">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="hw_note_manually_c4" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="hw_note_manually_c4" placeholder="Ручной ввод" maxlength="100">
 						</td>
 						<td>
 							<button type="button" class="del btn btn-danger" name="del_btn_c4">Удалить</button>
@@ -601,7 +924,7 @@ if (isset($_SESSION['logged_user'])) {
 					</tr>
 					<tr>
 						<td colspan="6">
-							<button type="button" class="add btn btn-success" name="add_btn_c4">Добавить</button>
+							<button id="add_btn_c4" type="button" class="add btn btn-success" name="add_btn_c4">Добавить</button>
 						</td>
 					</tr>
 				</tbody>
@@ -620,19 +943,19 @@ if (isset($_SESSION['logged_user'])) {
 								get_db_list($pdo, 'Hardware', 'category', '5', 'description');
 							?>
 						</select>
-						<input type="text" class="input-group-text" name="description_manually_c5" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="description_manually_c5" placeholder="Ручной ввод" maxlength="100">
 					</td>
 					<td>
 						<select class="custom-select" name="feature_c5" id="feature_c5">
 							<option value=""> Значение
 						</select>
-						<input type="text" class="input-group-text" name="feature_manually_c5" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="feature_manually_c5" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
 					</td>
 					<td colspan="2">
 						<select class="custom-select" name="hw_note_c5" id="hw_note_c5">
 							<option value=""> Примечание
 						</select>
-						<input type="text" class="input-group-text" name="hw_note_manually_c5" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="hw_note_manually_c5" placeholder="Ручной ввод" maxlength="100">
 					</td>
 				</tr>
 
@@ -645,11 +968,11 @@ if (isset($_SESSION['logged_user'])) {
 								get_db_list($pdo, 'Periphery', 'category', '6', 'pd_model');
 							?>
 						</select>
-						<input type="text" class="input-group-text" name="hw_name_manually_c6" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="hw_name_manually_c6" placeholder="Ручной ввод" maxlength="100">
 					</td>
 					<th style="color: blue">инв.номер:</th>
 					<td colspan="3">
-						<input type="text" class="input-group-text" name="pd_inv_num_c6" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
+						<input type="text" class="input-group-text" id="pd_inv_num_c6" name="pd_inv_num_c6" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
 					</td>
 				</tr>
 
@@ -667,23 +990,23 @@ if (isset($_SESSION['logged_user'])) {
 										get_db_list($pdo, 'Periphery', 'category', '7', 'pd_name');
 									?>
 								</select>
-								<input type="text" class="input-group-text" name="pd_name_manually_c7" placeholder="Ручной ввод">
+								<input type="text" class="input-group-text" name="pd_name_manually_c7" placeholder="Ручной ввод" maxlength="30">
 							</td>
 							<td colspan="2">
 								<select class="custom-select" name="pd_model_c7" id="pd_model_c7">
 									<option value="">Выберите описание
 								</select>
-								<input type="text" class="input-group-text" name="pd_model_manually_c7" placeholder="Ручной ввод">
+								<input type="text" class="input-group-text" name="pd_model_manually_c7" placeholder="Ручной ввод" maxlength="100">
 							</td>
 							<td>
 								<select class="custom-select" name="feature_c7" id="feature_c7">
 									<option value="">Значение
 								</select>
-								<input type="text" class="input-group-text" name="feature_manually_c7" placeholder="Ручной ввод">
+								<input type="text" class="input-group-text" name="feature_manually_c7" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
 							</td>
 							<td>
 								<p style="color: blue; margin: 0; padding: 0">инв.номер:</p>
-								<input type="text" class="input-group-text" name="pd_inv_num_c7" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
+								<input type="text" class="input-group-text" id="pd_inv_num_c7" name="pd_inv_num_c7" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
 							</td>
 							<td>
 								<button type="button" class="del btn btn-danger" name="del_btn_c7">Удалить</button>
@@ -691,7 +1014,7 @@ if (isset($_SESSION['logged_user'])) {
 						</tr>
 						<tr>
 							<td colspan="6">
-								<button type="button" class="add btn btn-success" name="add_btn_c7">Добавить устройство</button>
+								<button id="add_btn_c7" type="button" class="add btn btn-success" name="add_btn_c7">Добавить устройство</button>
 							</td>
 						</tr>
 					</tbody>
@@ -726,37 +1049,37 @@ if (isset($_SESSION['logged_user'])) {
 									get_db_list($pdo, 'Software', 'sw_name', '', '');
 								?>
 							</select>
-							<input type="text" class="input-group-text" name="sw_name_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="sw_name_manually" placeholder="Ручной ввод" maxlength="50">
 						</td>
 						<td>
 							<select class="custom-select" name="licence_type" id="licence_type">
 								<option value="">Выберите тип лицензии
 							</select>
-							<input type="text" class="input-group-text" name="licence_type_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="licence_type_manually" placeholder="Ручной ввод" maxlength="22">
 						</td>
 						<td>
-							<input type="text" class="input-group-text" name="licence_num" placeholder="Номер лицензии">
+							<input type="text" class="input-group-text" id="licence_num" name="licence_num" placeholder="Номер лицензии" maxlength="40">
 						</td>
 						<td>
-							<input type="text" class="input-group-text" name="licence_key" placeholder="Ключ продукта">
+							<input type="text" class="input-group-text" id="licence_key" name="licence_key" placeholder="Ключ продукта" maxlength="40">
 						</td>
 						<td>
 							<select class="custom-select" name="version" id="version">
 								<option value="">Выберите версию
 							</select>
-							<input type="text" class="input-group-text" name="version_manually" placeholder="Версия">
+							<input type="text" class="input-group-text" name="version_manually" placeholder="Версия" maxlength="15">
 						</td>
 						<td>
 							<select class="custom-select" name="sw_note" id="sw_note">
 								<option value="">Примечание
 							</select>
-							<input type="text" class="input-group-text" name="sw_note_manually" placeholder="Ручной ввод">
+							<input type="text" class="input-group-text" name="sw_note_manually" placeholder="Ручной ввод" maxlength="50">
 							<button type="button" class="del btn btn-danger" name="del_btn_sw">Удалить</button>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="6">
-							<button type="button" class="add btn btn-success" name="add_btn_sw">Добавить ПО</button>
+							<button id="add_btn_sw" type="button" class="add btn btn-success" name="add_btn_sw">Добавить ПО</button>
 						</td>
 					</tr>
 				</tbody>
@@ -776,6 +1099,14 @@ if (isset($_SESSION['logged_user'])) {
 </html>
 
 <?php
+if (isset($_GET['id'])) {
+	echo '<p>Триииииииииикота </p>';
+	echo '<script type="text/javascript">
+		get_old_page(' . $_GET['id'] . ');
+	</script>';
+} else {
+	echo '<p>Восемь котооов';
+}
 } else {
 	echo '<!DOCTYPE html>
 	<html>

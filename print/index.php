@@ -211,7 +211,7 @@ if (isset($_SESSION['logged_user'])) {
 	</script>
 	<?php
         $pdo = connect_db();
-        $ID_pc = 33;
+        $ID_pc = 29;
     ?>
 	<style>
 		* {

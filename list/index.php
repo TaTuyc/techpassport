@@ -37,19 +37,19 @@ if (isset($_SESSION['logged_user'])) {
 							data[i] = '';
 						}
 					}
-					data_size = data_size / 3;
-					var buff;
+					data_size = data_size / 4;
+					var buff = '';
 					$('#pas_list').html('');
 					for (i = 0; i < data_size; i++) {
-						buff = document.getElementById('pas_list').innerHTML;
-						$('#pas_list').html(buff + 
-							'<tr><td>' + data[i * 3] + '</td><td>' + data[i * 3 + 1] + '</td><td>' + data[i * 3 + 2] + '</td>' + 
-							'<td><button type="button" class="del btn btn-danger" name="delbtn_' + i + '">Удалить</button></td>' +
-							'<td><button href="change_file.php" type="button" class="chng btn btn-primary" name="editbtn_' + i + '">Изменить</button></td>' +
-							'<td><button href="fix_file.php" type="button" class="fix btn btn-primary" name="repbtn_' + i + '">Ремонт</button></td>' +
-							'<td><button href="export_file.php" type="button" class="exp btn btn-success" name="expbtn_' + i + '">Экспорт</button></td>'
-						);
+						//buff = document.getElementById('pas_list').innerHTML;
+						buff += 
+							'<tr><td>' + data[i * 4] + '</td><td>' + data[i * 4 + 1] + '</td><td>' + data[i * 4 + 2] + '</td>' + 
+							'<td><button type="button" class="del btn btn-danger" name="delbtn_' + data[i * 4 + 3] + '">Удалить</button></td>' +
+							'<td><form method="post" action="../passport/index.php?id=' + data[i * 4 + 3] + '"><button type="submit" class="chng btn btn-primary" name="editbtn_' + data[i * 4 + 3] + '">Изменить</button></form></td>' +
+							'<td><button href="fix_file.php" type="button" class="fix btn btn-primary" name="repbtn_' + data[i * 4 + 3] + '">Ремонт</button></td>' +
+							'<td><button href="export_file.php" type="button" class="exp btn btn-success" name="expbtn_' + data[i * 4 + 3] + '">Экспорт</button></td>';
 					}
+					$('#pas_list').html(buff);
 				}
 			});
 			

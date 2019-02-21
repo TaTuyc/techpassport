@@ -307,7 +307,7 @@
         $pc_inv_num = htmlspecialchars($data['pc_inv_num']);
         $pc_inv_num = checkNull($pc_inv_num);
         
-        $pdo = connect_db('root', '62996326');
+        $pdo = connect_db();
         
         // ставим в приоритет ручной ввод
         
@@ -446,7 +446,7 @@
             $name_now = get_name($el);
             $category_now = preg_match('/_c\d+/', $el, $matches) ? substr($matches[0], 2) : NULL;
             $index_now = preg_match('/_elem\d+/', $el, $matches) ? substr($matches[0], 5) : NULL;
-            if ($category_now == '1' || $category == '4') {
+            if ($category_now == '1' || $category_now == '4') {
                 $buff_name = get_right_value(htmlspecialchars($data[$el]),
                                              htmlspecialchars($data[$name_now . '_manually_c'. $category_now . '_elem' . $index_now]));
                 $buff_description = get_right_value(htmlspecialchars($data['description_c' . $category_now . '_elem' . $index_now]),

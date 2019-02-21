@@ -1,6 +1,9 @@
 /**
  * Created by moskitos80 on 23.08.14.
  */
+
+var RID_glob;
+
 var DynamicTable = (function (GLOB) {
     var RID = 0;
     return function (tBody) {
@@ -39,6 +42,7 @@ var DynamicTable = (function (GLOB) {
                 }
             }
             RID++;
+            RID_glob = RID;
             return row;
         };
         var _addRow = function (before, tBody) {
@@ -51,3 +55,7 @@ var DynamicTable = (function (GLOB) {
         _correctNames(tBody.rows[0]);
     };
 })(this);
+
+function get_RID() {
+    return RID_glob;
+}

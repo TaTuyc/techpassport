@@ -2,15 +2,15 @@
 include 'action.php';
 include 'fillprint.php';
 $pdo = connect_db();
-if (isset($_POST["mb_model"]) && !empty($_POST["mb_model"])) {
+if (isset($_POST["mb_model"])) {
    get_db_list($pdo, 'Hardware', 'hw_name', 'Системная плата', 'hw_note');
-} elseif (isset($_POST["ram_type"]) && !empty($_POST["ram_type"])) {
+} elseif (isset($_POST["ram_type"])) {
     if ($_POST["need"] == "rc") {
         get_db_list($pdo,'Hardware','description',$_POST["ram_type"],'feature');
     } else {
         get_db_list($pdo,'Hardware','description',$_POST["ram_type"],'hw_note');
     }    
-} elseif (isset($_POST["cpu_model"]) && !empty($_POST["cpu_model"])) {
+} elseif (isset($_POST["cpu_model"])) {
     if ($_POST["need"] == "cf") {
         get_db_list($pdo,'Hardware','description',$_POST["cpu_model"],'feature');
     } else {
