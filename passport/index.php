@@ -28,6 +28,20 @@ if (isset($_SESSION['logged_user'])) {
 		
 		max_index = 0;
 		
+		$(document).on('submit', 'form', function(e) {
+			var form = this;
+			if (document.getElementsByName('responsible_person')[0].value == "") {
+				if (document.getElementsByName('responsible_person_manually')[0].value == "") {
+					e.preventDefault();
+					alert("Назначьте ответственного!");
+				} else {
+					form.submit();
+				}
+			} else {
+				form.submit();
+			}
+		});
+		
 		function eventChange(parent_id, call_type, name_, category_, index_) {
 			var parent_var = $('#' + parent_id).val();
 			if (parent_var != "") {
@@ -389,6 +403,9 @@ if (isset($_SESSION['logged_user'])) {
 		
 		$(document).on('change', function(e) {
 			var parent_id = e.target.id;
+			if (parent_id == "") {
+				return;
+			}
 			var parent_var = $('#' + parent_id).val();
 			var x;
 			//console.log(parent_id);
@@ -505,6 +522,7 @@ if (isset($_SESSION['logged_user'])) {
 			get_hw_array(id);
 			get_pd_array(id);
 			get_sw_array(id);
+			document.getElementById('save_btn').setAttribute('name', 'update_passport');
 			
 			//console.log(get_RID());
 			//document.getElementById('add_btn_c1').click();
@@ -553,9 +571,9 @@ if (isset($_SESSION['logged_user'])) {
 			echo " " . $_SESSION['logged_user'] . "!";
 		?>
 		</p>
-		<button type="button" class="btn btn-info" style="width: 90px" onclick="location.href='../logout.php'">Выйти</button>
+		<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../logout.php'>Выйти</button>
 		</div>
-		<form action="../action.php" method="post">
+		<form id="form" name="form" action="../action.php" method="post">
 		<table id="pasport" class="table table-bordered table-hover ">
 			<thead>
 				<tr>
@@ -667,14 +685,14 @@ if (isset($_SESSION['logged_user'])) {
                                 get_db_list($pdo, 'Hardware', 'hw_name', 'Системная плата', 'description');
                             ?>
 						</select>
-						<input type="text" class="input-group-text" name="mb_model_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="mb_model_manually" placeholder="Ручной ввод" maxlength="100">
 					</td>
 					<td></td>
 					<td colspan="2" style="color: blue;">
 						<select class="custom-select" name="mb_note" id="mb_note">
 							<option value=""> Примечание
 						</select>
-						<input type="text" class="input-group-text" name="mb_note_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="mb_note_manually" placeholder="Ручной ввод" maxlength="100">
 					</td>
 				</tr>
 
@@ -687,19 +705,19 @@ if (isset($_SESSION['logged_user'])) {
                                 get_db_list($pdo, 'Hardware', 'hw_name', 'Оперативная память', 'description');
                             ?>
 						</select>
-						<input type="text" class="input-group-text" name="ram_type_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="ram_type_manually" placeholder="Ручной ввод" maxlength="100">
 					</td>
 					<td>
 						<select class="custom-select" name="ram_capacity" id="ram_capacity">
 							<option value=""> Выберите объём							
 						</select>
-						<input type="text" class="input-group-text" name="ram_capacity_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="ram_capacity_manually" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
 					</td>
 					<td colspan="2">
 						<select class="custom-select" name="ram_note" id="ram_note">
 							<option value=""> Примечание							
 						</select>
-						<input type="text" class="input-group-text" name="ram_note_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="ram_note_manually" placeholder="Ручной ввод" maxlength="100">
 					</td>
 				</tr>
 
@@ -712,19 +730,19 @@ if (isset($_SESSION['logged_user'])) {
                                 get_db_list($pdo, 'Hardware', 'hw_name', 'ЦП', 'description');
                             ?>
 						</select>
-						<input type="text" class="input-group-text" name="cpu_model_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="cpu_model_manually" placeholder="Ручной ввод" maxlength="100">
 					</td>
 					<td>
 						<select class="custom-select" name="cpu_frequency" id= "cpu_frequency">
 							<option value=""> Выберите частоту
 						</select>
-						<input type="text" class="input-group-text" name="cpu_frequency_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="cpu_frequency_manually" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
 					</td>
 					<td colspan="2" style="color: blue;">
 						<select class="custom-select" name="cpu_note" id="cpu_note">
 							<option value=""> Примечание
 						</select>
-						<input type="text" class="input-group-text" name="cpu_note_manually" placeholder="Ручной ввод">
+						<input type="text" class="input-group-text" name="cpu_note_manually" placeholder="Ручной ввод" maxlength="100">
 					</td>
 				</tr>
 			</tbody>
@@ -968,7 +986,7 @@ if (isset($_SESSION['logged_user'])) {
 								get_db_list($pdo, 'Periphery', 'category', '6', 'pd_model');
 							?>
 						</select>
-						<input type="text" class="input-group-text" name="hw_name_manually_c6" placeholder="Ручной ввод" maxlength="100">
+						<input type="text" class="input-group-text" name="description_manually_c6" placeholder="Ручной ввод" maxlength="100">
 					</td>
 					<th style="color: blue">инв.номер:</th>
 					<td colspan="3">
@@ -1091,7 +1109,7 @@ if (isset($_SESSION['logged_user'])) {
 			</tbody>
 
 		</table>
-		<input type="submit" class="btn btn-primary" name="save_passport" value="Сохранить паспорт">
+		<input type="submit" class="btn btn-primary" id="save_btn" name="save_passport" value="Сохранить паспорт">
 		</form>
 	</div>
 </body>
@@ -1099,14 +1117,12 @@ if (isset($_SESSION['logged_user'])) {
 </html>
 
 <?php
-if (isset($_GET['id'])) {
-	echo '<p>Триииииииииикота </p>';
-	echo '<script type="text/javascript">
-		get_old_page(' . $_GET['id'] . ');
-	</script>';
-} else {
-	echo '<p>Восемь котооов';
-}
+	if (isset($_GET['id'])) {
+		echo '<script type="text/javascript">
+			get_old_page(' . $_GET['id'] . ');
+			document.getElementById("form").setAttribute("action", "../action.php?id=' . $_GET['id'] .'");
+		</script>';
+	}
 } else {
 	echo '<!DOCTYPE html>
 	<html>

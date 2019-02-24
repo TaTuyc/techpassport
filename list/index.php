@@ -63,16 +63,19 @@ if (isset($_SESSION['logged_user'])) {
 				success: function(data){
 					var page_size = data[1];
 					var page_this = id_page;
-					var num = (data[0] - data[0] % page_size) / page_size + 2;
+					var num = (data[0] - data[0] % page_size) / page_size + 1;
+					if (data[0] % page_size != 0) {
+						num++;
+					}
 					var buff = "";
 					if (page_this != 1) {
-						buff = '<a onclick="get_portion(' + (page_this - 1) + ')">&nbsp;Предыдущая&nbsp;</a>';
+						buff = '<a onclick="get_portion(' + (page_this - 1) + ');">&nbsp;Предыдущая&nbsp;</a>';
 					}
 					for (i = 1; i < num; i++) {
-						buff += '<a onclick="get_portion(' + i + ')">&nbsp;' + i + '</a>';
+						buff += '<a onclick="get_portion(' + i + ');">&nbsp;' + i + '</a>';
 					}
 					if (page_this != num - 1) {
-						buff += '<a onclick="get_portion(' + (page_this + 1) + ')">&nbsp;&nbsp;Следующая</a>';
+						buff += '<a onclick="get_portion(' + (page_this + 1) + ');">&nbsp;&nbsp;Следующая</a>';
 					}
 					$('#num_pages').html('<tr><td colspan="7">' + buff + '</td></tr>');
 				}
@@ -102,11 +105,11 @@ if (isset($_SESSION['logged_user'])) {
 	<div style="display: flex; width: 80%; margin: auto">
 		<div style="text-align: left; width: 50%">
 			<p>Количество страниц для просмотра</p>
-			<a onclick="set_portion_size(2)">&nbsp;2</a>
-			<a onclick="set_portion_size(3)">&nbsp;3</a>
-			<a onclick="set_portion_size(10)">&nbsp;10</a>
-			<a onclick="set_portion_size(20)">&nbsp;20</a>
-			<a onclick="set_portion_size(40)">&nbsp;40</a>
+			<a onclick="set_portion_size(2);">&nbsp;2</a>
+			<a onclick="set_portion_size(3);">&nbsp;3</a>
+			<a onclick="set_portion_size(10);">&nbsp;10</a>
+			<a onclick="set_portion_size(20);">&nbsp;20</a>
+			<a onclick="set_portion_size(40);">&nbsp;40</a>
 		</div>
 		
 		<div style="text-align: right; width: 50%">
@@ -115,7 +118,7 @@ if (isset($_SESSION['logged_user'])) {
 					echo " " . $_SESSION['logged_user'] . "!";
 				?>
 			</p>
-			<button type="button" class="btn btn-info" style="width: 90px" onclick="location.href='../logout.php'">Выйти</button>
+			<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../logout.php'>Выйти</button>
 		</div>
 	</div>
 	
