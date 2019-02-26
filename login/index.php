@@ -1,5 +1,5 @@
 <?php 
-	include '../php/action.php';
+	include_once '../php/action.php';
     $pdo = connect_db();
 	
 	// нельзя напрямую обращаться к POST-переменным

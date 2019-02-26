@@ -1,5 +1,5 @@
 <?php
-include '../php/action.php';
+include_once '../php/action.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: ../login/index.php');

@@ -1,5 +1,5 @@
 <?php
-include '../php/action.php';
+include_once '../php/action.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: ../login/index.php');
@@ -391,8 +391,9 @@ if (isset($_SESSION['logged_user'])) {
 						document.getElementsByName(name_)[0].value = html;
 					} else if (name_ == 'responsible_person') {
 						document.getElementsByName(name_)[0].value = html;
+					} else if (name_ == 'responsible_since') {
+						document.getElementsByName(name_)[0].value = html;
 					}
-					
 				}
 			}).responseText;
 		}
@@ -519,6 +520,7 @@ if (isset($_SESSION['logged_user'])) {
 			get_data_via_id(id, 'position');
 			get_data_via_id(id, 'pc_inv_num');
 			get_data_via_id(id, 'responsible_person');
+			get_data_via_id(id, 'responsible_since');
 			get_hw_array(id);
 			get_pd_array(id);
 			get_sw_array(id);
@@ -657,6 +659,8 @@ if (isset($_SESSION['logged_user'])) {
                             ?>
 						</select>
                         <input type="text" class="input-group-text" name="responsible_person_manually" placeholder="Ручной ввод" maxlength="200">
+						<p style="margin: 0; padding: 5px; font-weight: bold">С какого времени</p>
+						<input type="date" class="custom-select" name="responsible_since" required>
 					</td>
 				</tr>
 			</tbody>

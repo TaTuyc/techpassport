@@ -1,6 +1,6 @@
 <?php
-include 'action.php';
-include 'fillprint.php';
+include_once 'action.php';
+include_once 'fillprint.php';
 $pdo = connect_db();
 if (isset($_POST["mb_model"])) {
    if (get_db_list($pdo, 'Hardware', 'hw_name', 'Системная плата', 'hw_note')) {
@@ -104,5 +104,7 @@ if (isset($_POST["mb_model"])) {
    delete_passport($pdo, $_POST["delete_passport"]);
 } elseif (isset($_POST["is_pc_exist"])) {
    echo is_pc_exist($pdo, $_POST["is_pc_exist"]);
+} elseif (isset($_POST["get_history"])) {
+   echo get_history($pdo, $_POST["get_history"]);
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
-include '../php/action.php';
-include '../php/fillprint.php';
+include_once '../php/action.php';
+include_once '../php/fillprint.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: ../login/index.php');

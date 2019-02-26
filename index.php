@@ -1,5 +1,5 @@
 <?php
-include 'php/action.php';
+include_once 'php/action.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: login/index.php');
@@ -35,7 +35,7 @@ if (isset($_SESSION['logged_user'])) {
 			echo " " . $_SESSION['logged_user'] . "!";
 		?>
 		</p>
-		<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='logout.php'>Выйти</button>
+		<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='php/logout.php'>Выйти</button>
 		</div>
     <form action="../link_list.php" method="post">
     	<p><input type="button" class="btn btn-success" value="Регистрация паспорта" onclick=location.href='passport/index.php'></p>
