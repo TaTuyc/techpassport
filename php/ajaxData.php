@@ -100,5 +100,9 @@ if (isset($_POST["mb_model"])) {
       $_SESSION['portion_size'] = $_POST["portion_size"];
       print json_encode($_SESSION['portion_size']);
    }
+} elseif (isset($_POST["delete_passport"])) {
+   delete_passport($pdo, $_POST["delete_passport"]);
+} elseif (isset($_POST["is_pc_exist"])) {
+   echo is_pc_exist($pdo, $_POST["is_pc_exist"]);
 }
 ?>

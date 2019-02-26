@@ -1,6 +1,6 @@
 <?php
-include '../action.php';
-include '../fillprint.php';
+include '../php/action.php';
+include '../php/fillprint.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: ../login/index.php');
@@ -27,7 +27,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_hw_item(id_hw) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'hw_id',
 					ID_hw: id_hw},
@@ -82,7 +82,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_pd_item(id_pd) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'pd_id',
 					ID_pd: id_pd},
@@ -118,7 +118,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_sw_item(id_sw) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'sw_id',
 					ID_sw: id_sw},
@@ -159,7 +159,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_hw_array(id_pc) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'hw',
 					ID_pc: id_pc},
@@ -176,7 +176,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_pd_array(id_pc) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'pd',
 					ID_pc: id_pc},
@@ -192,7 +192,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_sw_array(id_pc) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'sw',
 					ID_pc: id_pc},

@@ -1,5 +1,5 @@
 <?php
-include '../action.php';
+include '../php/action.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: ../login/index.php');
@@ -47,7 +47,7 @@ if (isset($_SESSION['logged_user'])) {
 			if (parent_var != "") {
 				var wow = $.ajax({
 					type: 'POST',
-					url: '../ajaxData.php',
+					url: '../php/ajaxData.php',
 					async: false,
 					data: {
 						is_call: call_type,
@@ -168,7 +168,7 @@ if (isset($_SESSION['logged_user'])) {
 			var buff;
 			var wow = $.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				async: false,
 				data: {
 					print_data: 'hw_id',
@@ -213,7 +213,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_hw_array(id_pc) {
 			var wow = $.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				async: false,
 				data: {
 					print_data: 'hw',
@@ -268,7 +268,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_pd_item(id_pd) {
 			var x = $.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				async: false,
 				data: {
 					print_data: 'pd_id',
@@ -296,7 +296,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_pd_array(id_pc) {
 			var x = $.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				async: false,
 				data: {
 					print_data: 'pd',
@@ -313,7 +313,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_sw_item(id_sw) {
 			var x = $.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				async: false,
 				data: {
 					print_data: 'sw_id',
@@ -347,7 +347,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_sw_array(id_pc) {
 			var x = $.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				async: false,
 				data: {
 					print_data: 'sw',
@@ -364,7 +364,7 @@ if (isset($_SESSION['logged_user'])) {
 		function get_data_via_id(id_, name_) {
 			var wow = $.ajax({
 				type: 'POST',
-				url: '../fillprint.php',
+				url: '../php/fillprint.php',
 				async: false,
 				data: {
 					id: id_,
@@ -413,7 +413,7 @@ if (isset($_SESSION['logged_user'])) {
 				if(parent_var != ""){
 					x = $.ajax({
 						type:'POST',
-						url:'../ajaxData.php',
+						url: '../php/ajaxData.php',
 						async: false,
 						data: {
 							mb_model: parent_var
@@ -428,7 +428,7 @@ if (isset($_SESSION['logged_user'])) {
 				if(parent_var != ""){
 					x = $.ajax({
 						type:'POST',
-						url:'../ajaxData.php',
+						url: '../php/ajaxData.php',
 						async: false,
 						data: {
 							ram_type: parent_var,
@@ -439,7 +439,7 @@ if (isset($_SESSION['logged_user'])) {
 					}).responseText;
 					x = $.ajax({
 						type:'POST',
-						url:'../ajaxData.php',
+						url: '../php/ajaxData.php',
 						async: false,
 						data: {
 							ram_type: parent_var,
@@ -456,7 +456,7 @@ if (isset($_SESSION['logged_user'])) {
 				if(parent_var != ""){
 					x = $.ajax({
 						type:'POST',
-						url:'../ajaxData.php',
+						url: '../php/ajaxData.php',
 						async: false,
 						data: {
 							cpu_model: parent_var,
@@ -467,7 +467,7 @@ if (isset($_SESSION['logged_user'])) {
 					}).responseText;
 					x = $.ajax({
 						type:'POST',
-						url:'../ajaxData.php',
+						url: '../php/ajaxData.php',
 						async: false,
 						data: {
 							cpu_model: parent_var,
@@ -571,9 +571,9 @@ if (isset($_SESSION['logged_user'])) {
 			echo " " . $_SESSION['logged_user'] . "!";
 		?>
 		</p>
-		<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../logout.php'>Выйти</button>
+		<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
 		</div>
-		<form id="form" name="form" action="../action.php" method="post">
+		<form id="form" name="form" action="../php/action.php" method="post">
 		<table id="pasport" class="table table-bordered table-hover ">
 			<thead>
 				<tr>
@@ -1120,7 +1120,7 @@ if (isset($_SESSION['logged_user'])) {
 	if (isset($_GET['id'])) {
 		echo '<script type="text/javascript">
 			get_old_page(' . $_GET['id'] . ');
-			document.getElementById("form").setAttribute("action", "../action.php?id=' . $_GET['id'] .'");
+			document.getElementById("form").setAttribute("action", "../php/action.php?id=' . $_GET['id'] .'");
 		</script>';
 	}
 } else {

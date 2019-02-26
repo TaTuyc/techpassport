@@ -1,5 +1,5 @@
 <?php 
-	include '../action.php';
+	include '../php/action.php';
     $pdo = connect_db();
 	
 	// нельзя напрямую обращаться к POST-переменным
@@ -36,7 +36,7 @@
 
 	<body>
 
-		<form id="login" action="./index.php" method="post">
+		<form id="login" action="index.php" method="post">
 		    <h1>Вход в систему</h1>
 			<?php
 				if (!empty($errors)) {

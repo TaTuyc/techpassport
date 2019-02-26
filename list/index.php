@@ -1,6 +1,6 @@
 <?php
-include '../action.php';
-include '../fillprint.php';
+include '../php/action.php';
+include '../php/fillprint.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: ../login/index.php');
@@ -22,10 +22,49 @@ if (isset($_SESSION['logged_user'])) {
 	<script type="text/javascript" src="../script/jquery.js"></script>
 	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
 	<script type="text/javascript">
+		
+		function get_delete_confirmation(id_pc) {
+			var answer = confirm("Удалить паспорт?");
+			if (answer) {
+				var x = $.ajax({
+					type: 'POST',
+					url: '../php/ajaxData.php',
+					async: false,
+					data: {
+						delete_passport: id_pc},
+					dataType: "json",
+					success: function(){}
+				}).responseText;
+				document.location.reload(true);
+			}
+		}
+		
+		function is_pc_exist(id_pc) {
+			var answer = false;
+			var x = $.ajax({
+				type: 'POST',
+				url: '../php/ajaxData.php',
+				async: false,
+				data: {
+					is_pc_exist: id_pc},
+				dataType: "json",
+				success: function(data){
+					answer = data;
+					console.log('Ответ '+data);
+				}
+			}).responseText;
+			if (!answer) {
+				alert("Паспорт удалён, страница будет перезагружена.");
+				document.location.reload(true);
+			} else {
+				document.location.href = '../passport/index.php?id=' + id_pc;
+			}
+		}
+		
 		function get_portion(id_page) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'page_id',
 					ID_page: id_page},
@@ -44,8 +83,8 @@ if (isset($_SESSION['logged_user'])) {
 						//buff = document.getElementById('pas_list').innerHTML;
 						buff += 
 							'<tr><td>' + data[i * 4] + '</td><td>' + data[i * 4 + 1] + '</td><td>' + data[i * 4 + 2] + '</td>' + 
-							'<td><button type="button" class="del btn btn-danger" name="delbtn_' + data[i * 4 + 3] + '">Удалить</button></td>' +
-							'<td><form method="post" action="../passport/index.php?id=' + data[i * 4 + 3] + '"><button type="submit" class="chng btn btn-primary" name="editbtn_' + data[i * 4 + 3] + '">Изменить</button></form></td>' +
+							'<td><button type="button" class="del btn btn-danger" name="delbtn_' + data[i * 4 + 3] + '" onclick="get_delete_confirmation(' + data[i * 4 + 3] + ')">Удалить</button></td>' +
+							'<td><button type="button" class="chng btn btn-primary" name="editbtn_' + data[i * 4 + 3] + '" onclick="is_pc_exist(' + data[i * 4 + 3] + ')">Изменить</button></td>' +
 							'<td><button href="fix_file.php" type="button" class="fix btn btn-primary" name="repbtn_' + data[i * 4 + 3] + '">Ремонт</button></td>' +
 							'<td><button href="export_file.php" type="button" class="exp btn btn-success" name="expbtn_' + data[i * 4 + 3] + '">Экспорт</button></td>';
 					}
@@ -55,7 +94,7 @@ if (isset($_SESSION['logged_user'])) {
 			
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					print_data: 'page_list',
 					ID_page: id_page},
@@ -85,7 +124,7 @@ if (isset($_SESSION['logged_user'])) {
 		function set_portion_size(new_size) {
 			$.ajax({
 				type: 'POST',
-				url: '../ajaxData.php',
+				url: '../php/ajaxData.php',
 				data: {
 					update_cookie: 'portion_size',
 					portion_size: new_size},
@@ -118,7 +157,7 @@ if (isset($_SESSION['logged_user'])) {
 					echo " " . $_SESSION['logged_user'] . "!";
 				?>
 			</p>
-			<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../logout.php'>Выйти</button>
+			<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
 		</div>
 	</div>
 	
