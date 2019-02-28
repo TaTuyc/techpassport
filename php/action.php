@@ -65,7 +65,7 @@
         $arr = array_unique($arr);
         
         foreach($arr as $row) {
-            echo "<option " . "value=\"" . $row . "\"> " . $row;
+            echo "<option value=\"" . $row . "\"> " . $row;
         }
     }
     
@@ -82,7 +82,7 @@
             $result->execute();
             foreach($result as $row) {
                 $is_empty_select = false;
-                echo "<option " . "value=\"" . htmlspecialchars($row[$value]) . "\"> " . htmlspecialchars($row[$value]);
+                echo "<option value=\"" . htmlspecialchars($row[$value]) . "\"> " . htmlspecialchars($row[$value]);
             }
         } else {
             $sql =
@@ -94,10 +94,23 @@
             $result->execute();
             foreach($result as $row) {
                 $is_empty_select = false;
-                echo "<option " . "value=\"" . htmlspecialchars($row[$column_name]) . "\"> " . htmlspecialchars($row[$column_name]);
+                echo "<option value=\"" . htmlspecialchars($row[$column_name]) . "\"> " . htmlspecialchars($row[$column_name]);
             }
         };
         return $is_empty_select;
+    }
+    
+    function get_actual_workers ($pdo) {
+        $sql ="SELECT full_name FROM Worker WHERE is_working IS NULL";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        foreach($result as $row) {
+            echo "<option value=\"" . htmlspecialchars($row['full_name']) . "\"> " . htmlspecialchars($row['full_name']);
+        }
+        $res_row_count = $result->rowCount();
+        if ($res_row_count == 0) {
+            echo '<option value=""></option>';
+        }
     }
     
     function get_id ($pdo, $table_name, $column_name, $name, $value) {
@@ -964,6 +977,17 @@
             echo 'Ошибка: ' . $e->getMessage();
             $pdo->rollBack();
         }
+    } elseif (isset($_POST["save_repair"])) {
+        $pdo = connect_db();
+        $ID_pc = get_name_for_insert($_GET['id']);
+        $rp_type = get_name_for_insert($_POST['rp_type']);
+        $rp_date = get_name_for_insert($_POST['rp_date']);
+        $repairer = get_name_for_insert($_POST['repairer']);
+        $sql =
+        "INSERT INTO Repair (ID_rp, ID_pc, rp_type, rp_date, repairer) VALUES (NULL, $ID_pc, $rp_type, $rp_date, $repairer)";
+        echo $sql;
+        $result = $pdo->prepare($sql);
+        $result->execute();
     }
     
     function delete_passport($pdo, $id_pc) {

@@ -1,5 +1,6 @@
 <?php
 include_once '../php/action.php';
+include_once '../php/fillprint.php';
 if (isset($_POST['log_out'])) {
 	unset($_SESSION['logged_user']);
 	header('Location: ../login/index.php');
@@ -21,31 +22,68 @@ if (isset($_SESSION['logged_user'])) {
 	<script type="text/javascript" src="../script/parsing.js"></script>
 	<script type="text/javascript" src="../script/dynamicTable.js"></script>
 	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
+	<script type="text/javascript">
+		function set_pas_info(id_pc) {
+			$.ajax({
+				type: 'POST',
+				url: '../php/ajaxData.php',
+				data: {
+					print_data: 'pas_3',
+					ID_page: id_pc},
+				dataType: "json",
+				success: function(data){
+					$('#pas_info').html(
+						'<tr>' +
+							'<td style="width: 40%">' + data[0] + '</td>' +
+							'<td style="width: 30%">' + data[1] + '</td>' +
+							'<td style="width: 30%">' + data[2] + '</td>' +
+						'</tr>'
+					);
+				}
+			});
+			document.getElementById('form').setAttribute('action', '../php/action.php?id=' + id_pc);
+		}
+	</script>
 </head>
 
 <!--Тушка-->
 
 <body>
-	<div class="table-responsive text-center" style="width: 80%; margin: auto">
+	<div class="table-responsive text-center" style="width: 70%; margin: auto">
 		<div style="text-align: right">
 		<p style="margin: 0; font-size: 16pt">Здравствуйте,
 		<?php
 			echo " " . $_SESSION['logged_user'] . "!";
+			$pdo = connect_db();
+			$ID_pc = htmlspecialchars($_GET['id']);
 		?>
 		</p>
 		<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
+		<table id="list" class="table table-bordered table-hover ">
+			<tbody>
+				<tr style="background-color: #D3D3D3">
+					<th scope="row" style="width: 40%">Имя рабочей станции</th>
+					<th scope="row" style="width: 30%">Кабинет</th>
+					<th scope="row" style="width: 30%">Инвентарный номер</th>
+				</tr>
+			</tbody>
+			<tbody id="pas_info">
+			</tbody>
+		</table>
 	</div>
-    <form action="../fix_page.php" method="post">
-    			<p><input type="date" class="custom-select" name="fix_data" id="fix_data" style="width: 60%"></p>
-          <p><input type="text" class="input-group-text" name="fixer" placeholder="Ответственный за ремонт" maxlength="200" style="width: 60%; margin: auto"></p>
-          <p><input type="textarea" name="fix_type" placeholder="Вид ремонта" maxlength="500" style="width: 60%; margin: auto"></p>
-		</form>
-    <input type="submit" class="btn btn-primary" name="save_page_list" value="Сохранить">
+	<h1>Ремонт</h1>
+    <form id="form" action="../php/action.php" method="post">
+		<input type="date" class="custom-select" name="rp_date" style="width: 29%; float: left; margin: 10px; margin-left: 20%" required>
+		<input type="text" class="input-group-text" name="repairer" placeholder="ФИО исполнителя ремонта" maxlength="200" style="width: 29%; float: right; margin: 10px; margin-right: 20%" required>
+		<p><textarea name="rp_type" placeholder="Вид ремонта" maxlength="500" style="width: 60%; min-height: 250px" required></textarea>
+		<p><input type="submit" class="btn btn-primary" name="save_repair" value="Сохранить">
+	</form>
 	</div>
 </body>
 
 </html>
 <?php
+echo '<script type="text/javascript"> set_pas_info(' . $ID_pc . ');</script>';
 } else {
 	echo '<!DOCTYPE html>
 	<html>

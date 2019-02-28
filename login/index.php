@@ -15,7 +15,7 @@
 					$_SESSION['portion_size'] = 20;
 				}
 				session_write_close();
-				header('Location: ../passport/index.php');
+				header('Location: ../index.php');
 				exit();
 			} else {
 				$errors[] = 'Неверный пароль!';

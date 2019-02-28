@@ -94,6 +94,8 @@ if (isset($_POST["mb_model"])) {
       get_passport_list($pdo, $_POST["ID_page"], $_SESSION['portion_size']);
    } elseif ($_POST["print_data"] == 'page_list') {
       get_page_list($pdo, $_POST["ID_page"]);
+   } elseif ($_POST["print_data"] == 'pas_3') {
+      get_pas_info($pdo, $_POST["ID_page"]);
    }
 } elseif (isset($_POST["update_cookie"])) {
    if ($_POST["update_cookie"] == 'portion_size') {
@@ -106,5 +108,7 @@ if (isset($_POST["mb_model"])) {
    echo is_pc_exist($pdo, $_POST["is_pc_exist"]);
 } elseif (isset($_POST["get_history"])) {
    echo get_history($pdo, $_POST["get_history"]);
+} elseif (isset($_POST["get_repair_list"])) {
+   echo get_repair_list($pdo, $_POST["get_repair_list"]);
 }
 ?>

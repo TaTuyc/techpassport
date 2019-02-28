@@ -15,7 +15,7 @@ if (isset($_SESSION['logged_user'])) {
 <head>
 	<meta charset="utf-8">
 	<!--Тип Кодировки-->
-	<title>Список паспортов.</title>
+	<title>Список паспортов</title>
 	<!--Заголовок-->
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script type="text/javascript" src="../script/setTable.js"></script>
@@ -39,7 +39,7 @@ if (isset($_SESSION['logged_user'])) {
 			}
 		}
 		
-		function is_pc_exist(id_pc) {
+		function is_pc_exist(id_pc, call_type) {
 			var answer = false;
 			var x = $.ajax({
 				type: 'POST',
@@ -56,7 +56,15 @@ if (isset($_SESSION['logged_user'])) {
 				alert("Паспорт удалён, страница будет перезагружена.");
 				document.location.reload(true);
 			} else {
-				document.location.href = '../passport/index.php?id=' + id_pc;
+				if (call_type == 'edit') {
+					document.location.href = '../passport/index.php?id=' + id_pc;
+				} else if (call_type == 'repair') {
+					document.location.href='../repair/index.php?id=' + id_pc;
+				} else if (call_type == 'history') {
+					get_history(id_pc);
+				} else if (call_type == 'get_repair') {
+					document.location.href='../repair_list/index.php?id=' + id_pc;
+				}
 			}
 		}
 		
@@ -108,10 +116,11 @@ if (isset($_SESSION['logged_user'])) {
 						buff += 
 							'<tr><td>' + data[i * 4] + '</td><td>' + data[i * 4 + 1] + '</td><td>' + data[i * 4 + 2] + '</td>' + 
 							'<td><button type="button" class="del btn btn-danger" onclick="get_delete_confirmation(' + data[i * 4 + 3] + ')">Удалить</button></td>' +
-							'<td><button type="button" class="chng btn btn-primary" name="editbtn_' + data[i * 4 + 3] + '" onclick="is_pc_exist(' + data[i * 4 + 3] + ')">Изменить</button></td>' +
-							'<td><button href="fix_file.php" type="button" class="fix btn btn-primary" name="repbtn_' + data[i * 4 + 3] + '">Ремонт</button></td>' +
-							'<td><button href="export_file.php" type="button" class="exp btn btn-success" name="expbtn_' + data[i * 4 + 3] + '">Экспорт</button></td>' +
-							'<td><button type="button" class="chng btn btn-primary" onclick="get_history(' + data[i * 4 + 3] + ')">История</button></td>';
+							'<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'edit\')">Изменить</button></td>' +
+							'<td><button type="button" class="fix btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'repair\')">Ремонт</button></td>' +
+							'<td><button type="button" class="exp btn btn-success" name="expbtn_' + data[i * 4 + 3] + '">Экспорт</button></td>' +
+							'<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'history\')">Ответственный</button></td>' +
+							'<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'get_repair\')">Ремонты</button></td>';
 					}
 					$('#pas_list').html(buff);
 				}
@@ -141,7 +150,7 @@ if (isset($_SESSION['logged_user'])) {
 					if (page_this != num - 1) {
 						buff += '<a onclick="get_portion(' + (page_this + 1) + ');">&nbsp;&nbsp;Следующая</a>';
 					}
-					$('#num_pages').html('<tr><td colspan="7">' + buff + '</td></tr>');
+					$('#num_pages').html('<tr><td colspan="9">' + buff + '</td></tr>');
 				}
 			});
 		}
@@ -190,7 +199,7 @@ if (isset($_SESSION['logged_user'])) {
 		<table id="list" class="table table-bordered table-hover ">
 			<thead>
 				<tr>
-					<th colspan="8" style="background-color: #8FBC8F">Список паспортов.</th>
+					<th colspan="9" style="background-color: #8FBC8F">Список паспортов</th>
 				</tr>
 			</thead>
 
@@ -199,7 +208,7 @@ if (isset($_SESSION['logged_user'])) {
 					<th scope="row" style="width: 20%">Имя рабочей станции</th>
 					<th scope="row" style="width: 25%">Кабинет</th>
 					<th scope="row" style="width: 25%">Инвентарный номер</th>
-					<th scope="row" colspan="5">Действия</th>
+					<th scope="row" colspan="6">Действия</th>
 				</tr>
 
 				<tbody id="pas_list">

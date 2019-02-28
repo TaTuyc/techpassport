@@ -40,7 +40,6 @@ if (isset($_SESSION['logged_user'])) {
     <form action="../link_list.php" method="post">
     	<p><input type="button" class="btn btn-success" value="Регистрация паспорта" onclick=location.href='passport/index.php'></p>
         <p><input type="button" class="btn btn-success" value="Список паспортов" onclick=location.href='list/index.php' title="Изменение, удаление, ремонт и печать"></p>
-        <p><input type="submit" class="btn btn-success" name="fix_list" value="Список ремонтов ПК"></p>
         <p><input type="submit" class="btn btn-success" name="per_list" value="Регистрация периферийного устройства" title="Создание устройства, не привязанного к конкретному ПК"></p>
         <p><input type="submit" class="btn btn-success" name="per_list" value="Список периферийных устройств" title="Устройства, не привязанные к конкретному ПК"></p>
         <p><input type="submit" class="btn btn-success" name="make_oper" value="Регистрация учётной записи пользователя" title="Регистрация операторов и администраторов, имеющих доступ к системе"></p>

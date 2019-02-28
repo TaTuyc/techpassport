@@ -655,7 +655,7 @@ if (isset($_SESSION['logged_user'])) {
 						<select class="custom-select" name="responsible_person">
 							<option value=""> Выберите ответственного
 							<?php
-                                get_db_list($pdo, 'Worker', 'full_name', '', '');
+                                get_actual_workers($pdo);
                             ?>
 						</select>
                         <input type="text" class="input-group-text" name="responsible_person_manually" placeholder="Ручной ввод" maxlength="200">
@@ -1122,9 +1122,10 @@ if (isset($_SESSION['logged_user'])) {
 
 <?php
 	if (isset($_GET['id'])) {
+		$ID_pc = htmlspecialchars($_GET['id']);
 		echo '<script type="text/javascript">
-			get_old_page(' . $_GET['id'] . ');
-			document.getElementById("form").setAttribute("action", "../php/action.php?id=' . $_GET['id'] .'");
+			get_old_page(' . $ID_pc . ');
+			document.getElementById("form").setAttribute("action", "../php/action.php?id=' . $ID_pc .'");
 		</script>';
 	}
 } else {

@@ -68,6 +68,20 @@
         print json_encode($result_array);
     }
     
+    function get_repair_list($pdo, $id_pc) {
+        $sql =
+        "SELECT * FROM Repair WHERE ID_pc = $id_pc";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['repairer'];
+            $result_array[] = $row['rp_date'];
+            $result_array[] = $row['rp_type'];
+        }
+        print json_encode($result_array);
+    }
+    
     function get_data_array ($pdo, $id_pc, $table_name, $result_column) {
         $sql =
         "SELECT $result_column
@@ -136,18 +150,20 @@
         }
         print json_encode($result_array);
     }
-    /*
-    function get_all_pc ($pdo) {
-        $sql = 
-        "SELECT * FROM Computer";
+    
+    function get_pas_info($pdo, $id_pc) {
+        $sql =
+        "SELECT * FROM Computer WHERE ID_pc = $id_pc";
         $result = $pdo->prepare($sql);
         $result->execute();
         $result_array = array();
         foreach($result as $row) {
-            $result_array[] = $row[$result_column];
+            $result_array[] = $row['pc_name'];
+            $result_array[] = get_data_via_2id($pdo, $row['ID_pc'], 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
+            $result_array[] = $row['inventory_number'] == NULL ? '' : $row['inventory_number'];
         }
         print json_encode($result_array);
-    }*/
+    }
     
     function get_passport_list($pdo, $id_page, $portion_size) {
         $cnt = 0;
