@@ -220,4 +220,32 @@
             echo get_responsible_since($pdo_copy, $_POST['id']);
         }
     }
+    
+    function get_users_list($pdo) {
+        $sql =
+        "SELECT * FROM User";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $users = array();
+        foreach($result as $row) {
+            $users[] = $row['login'];
+            $users[] = str_repeat('*', strlen($row['password']));
+            $users[] = $row['permissions'];
+        }
+        print json_encode($users);
+    }
+    
+    function get_user_data($pdo, $login) {
+        $sql =
+        "SELECT * FROM User WHERE login = $login";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $users = array();
+        foreach($result as $row) {
+            $users[] = $row['login'];
+            $users[] = $row['password'];
+            $users[] = $row['permissions'];
+        }
+        print json_encode($users);
+    }
 ?>

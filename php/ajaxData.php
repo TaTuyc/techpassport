@@ -110,5 +110,15 @@ if (isset($_POST["mb_model"])) {
    echo get_history($pdo, $_POST["get_history"]);
 } elseif (isset($_POST["get_repair_list"])) {
    echo get_repair_list($pdo, $_POST["get_repair_list"]);
+} elseif (isset($_POST["get_permissions"])) {
+   echo get_permissions($pdo, $_SESSION['logged_user']);
+} elseif (isset($_POST["get_users_list"])) {
+   echo get_users_list($pdo);
+} elseif (isset($_POST["delete_user"])) {
+   delete_user($pdo, htmlspecialchars($_POST["delete_user"]));
+} elseif (isset($_POST["is_user_exist"])) {
+   echo is_user_exist($pdo, htmlspecialchars($_POST["is_user_exist"]));
+} elseif (isset($_POST["get_user_data"])) {
+   echo get_user_data($pdo, htmlspecialchars($_POST["get_user_data"]));
 }
 ?>

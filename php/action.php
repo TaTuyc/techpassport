@@ -39,6 +39,18 @@
         }
     }
     
+    function get_permissions ($pdo, $login) {
+        $login = "'" . $login . "'";
+        $sql = "SELECT permissions
+            FROM User
+            WHERE login = $login";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        foreach($result as $row) {
+            return htmlspecialchars($row['permissions']);
+        }
+    }
+    
     function get_db_list_с2 ($pdo) {
         $sql =
         "SELECT DISTINCT hw_name 
@@ -985,7 +997,25 @@
         $repairer = get_name_for_insert($_POST['repairer']);
         $sql =
         "INSERT INTO Repair (ID_rp, ID_pc, rp_type, rp_date, repairer) VALUES (NULL, $ID_pc, $rp_type, $rp_date, $repairer)";
-        echo $sql;
+        $result = $pdo->prepare($sql);
+        $result->execute();
+    } elseif (isset($_POST["save_user"])) {
+        $pdo = connect_db();
+        $login = get_name_for_insert($_POST['login']);
+        $password = get_name_for_insert($_POST['password']);
+        $permissions = get_name_for_insert($_POST['permissions']);
+        $sql =
+        "INSERT INTO User (login, password, permissions) VALUES ($login, $password, $permissions)";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+    } elseif (isset($_POST["update_user"])) {
+        $pdo = connect_db();
+        $login = get_name_for_insert($_GET["login"]);
+        $password = get_name_for_insert($_POST["password"]);
+        $permissions = get_name_for_insert($_POST["permissions"]);
+        $sql = 
+            "UPDATE User SET 
+            password = $password, permissions = $permissions WHERE login = $login";
         $result = $pdo->prepare($sql);
         $result->execute();
     }
@@ -997,9 +1027,29 @@
         $result->execute();
     }
     
+    function delete_user($pdo, $login) {
+        $sql =
+        "DELETE FROM User WHERE login = $login";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+    }
+    
     function is_pc_exist($pdo, $id_pc) {
         $sql =
         "SELECT ID_pc FROM Computer WHERE ID_pc = $id_pc";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $res_row_count = $result->rowCount();
+        if ($res_row_count == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function is_user_exist($pdo, $login) {
+        $sql =
+        "SELECT login FROM User WHERE login = $login";
         $result = $pdo->prepare($sql);
         $result->execute();
         $res_row_count = $result->rowCount();

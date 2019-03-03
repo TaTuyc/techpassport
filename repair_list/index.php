@@ -81,19 +81,19 @@ if (isset($_SESSION['logged_user'])) {
                 $ID_pc = htmlspecialchars($_GET['id']);
             ?>
             </p>
-            <button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
-            <table id="list" class="table table-bordered table-hover ">
-                <tbody>
-                    <tr style="background-color: #D3D3D3">
-                        <th scope="row" style="width: 40%">Имя рабочей станции</th>
-                        <th scope="row" style="width: 30%">Кабинет</th>
-                        <th scope="row" style="width: 30%">Инвентарный номер</th>
-                    </tr>
-                </tbody>
-                <tbody id="pas_info">
-                </tbody>
-            </table>
-        </div>
+			<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
+		</div>
+		<table id="list" class="table table-bordered table-hover ">
+			<tbody>
+				<tr style="background-color: #D3D3D3">
+					<th scope="row" style="width: 40%">Имя рабочей станции</th>
+					<th scope="row" style="width: 30%">Кабинет</th>
+					<th scope="row" style="width: 30%">Инвентарный номер</th>
+				</tr>
+			</tbody>
+			<tbody id="pas_info">
+			</tbody>
+		</table>
         <h1>Список ремонтов этого компьютера</h1>
         <table class="table table-bordered table-hover ">
             <tbody id="repair_info">
@@ -110,7 +110,7 @@ echo '<script type="text/javascript"> set_pas_info(' . $ID_pc . '); get_repair_l
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<title>Паспорт.</title>
+		<title>Паспорт</title>
 	</head>
 	<body style="background-color: #c0c0c0">' .
 	'<div style="margin-top: 18%; width: 80%; margin-left: 10%; background-color: #eeeeee; border-radius: 10pt">

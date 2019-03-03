@@ -460,7 +460,7 @@ if (isset($_SESSION['logged_user'])) {
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<title>Паспорт.</title>
+		<title>Паспорт</title>
 	</head>
 	<body style="background-color: #c0c0c0">' .
 	'<div style="margin-top: 18%; width: 80%; margin-left: 10%; background-color: #eeeeee; border-radius: 10pt">

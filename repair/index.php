@@ -51,14 +51,15 @@ if (isset($_SESSION['logged_user'])) {
 <body>
 	<div class="table-responsive text-center" style="width: 70%; margin: auto">
 		<div style="text-align: right">
-		<p style="margin: 0; font-size: 16pt">Здравствуйте,
-		<?php
-			echo " " . $_SESSION['logged_user'] . "!";
-			$pdo = connect_db();
-			$ID_pc = htmlspecialchars($_GET['id']);
-		?>
-		</p>
-		<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
+			<p style="margin: 0; font-size: 16pt">Здравствуйте,
+			<?php
+				echo " " . $_SESSION['logged_user'] . "!";
+				$pdo = connect_db();
+				$ID_pc = htmlspecialchars($_GET['id']);
+			?>
+			</p>
+			<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
+		</div>
 		<table id="list" class="table table-bordered table-hover ">
 			<tbody>
 				<tr style="background-color: #D3D3D3">
@@ -70,14 +71,13 @@ if (isset($_SESSION['logged_user'])) {
 			<tbody id="pas_info">
 			</tbody>
 		</table>
-	</div>
-	<h1>Ремонт</h1>
-    <form id="form" action="../php/action.php" method="post">
-		<input type="date" class="custom-select" name="rp_date" style="width: 29%; float: left; margin: 10px; margin-left: 20%" required>
-		<input type="text" class="input-group-text" name="repairer" placeholder="ФИО исполнителя ремонта" maxlength="200" style="width: 29%; float: right; margin: 10px; margin-right: 20%" required>
-		<p><textarea name="rp_type" placeholder="Вид ремонта" maxlength="500" style="width: 60%; min-height: 250px" required></textarea>
-		<p><input type="submit" class="btn btn-primary" name="save_repair" value="Сохранить">
-	</form>
+		<h1>Ремонт</h1>
+		<form id="form" action="../php/action.php" method="post">
+			<input type="date" class="custom-select" name="rp_date" style="width: 29%; float: left; margin: 10px; margin-left: 20%" required>
+			<input type="text" class="input-group-text" name="repairer" placeholder="ФИО исполнителя ремонта" maxlength="200" style="width: 29%; float: right; margin: 10px; margin-right: 20%" required>
+			<p><textarea name="rp_type" placeholder="Вид ремонта" maxlength="500" style="width: 60%; min-height: 250px" required></textarea>
+			<p><input type="submit" class="btn btn-primary" name="save_repair" value="Сохранить">
+		</form>
 	</div>
 </body>
 
@@ -89,7 +89,7 @@ echo '<script type="text/javascript"> set_pas_info(' . $ID_pc . ');</script>';
 	<html>
 	<head>
 		<meta charset="utf-8">
-		<title>Паспорт.</title>
+		<title>Паспорт</title>
 	</head>
 	<body style="background-color: #c0c0c0">' .
 	'<div style="margin-top: 18%; width: 80%; margin-left: 10%; background-color: #eeeeee; border-radius: 10pt">
