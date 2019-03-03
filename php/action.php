@@ -15,7 +15,7 @@
         $empty_check = true;
         $result = $pdo->prepare("SELECT $login
             FROM User 
-            WHERE login = $login");
+            WHERE login = $login LIMIT 1");
         $result->execute();
         foreach($result as $row) {
             $empty_check = false;
@@ -31,7 +31,7 @@
         $login = "'" . $login . "'";
         $sql = "SELECT password 
             FROM User 
-            WHERE login = $login";
+            WHERE login = $login LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         foreach($result as $row) {
@@ -43,7 +43,7 @@
         $login = "'" . $login . "'";
         $sql = "SELECT permissions
             FROM User
-            WHERE login = $login";
+            WHERE login = $login LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         foreach($result as $row) {
@@ -130,7 +130,7 @@
         $sql =
         "SELECT $value
             FROM $table_name
-            WHERE $column_name = $name";
+            WHERE $column_name = $name LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         foreach($result as $row) {
@@ -169,7 +169,7 @@
         $sql1 =
         "SELECT * 
             FROM Hardware 
-            WHERE hw_name $hw_name_s AND description $description_s AND feature $feature_s AND hw_note $hw_note_s AND category $category_s";
+            WHERE hw_name $hw_name_s AND description $description_s AND feature $feature_s AND hw_note $hw_note_s AND category $category_s LIMIT 1";
         $result = $pdo->prepare($sql1);
         $result->execute();
         foreach($result as $row) {
@@ -210,7 +210,7 @@
             $sql1 =
             "SELECT ID_pd 
                 FROM Periphery 
-                WHERE ID_pc $id_pc_s AND pd_name $pd_name_s AND pd_model $pd_model_s AND feature $feature_s AND pd_inventory_number $pd_inv_num_s AND category $category_s";
+                WHERE ID_pc $id_pc_s AND pd_name $pd_name_s AND pd_model $pd_model_s AND feature $feature_s AND pd_inventory_number $pd_inv_num_s AND category $category_s LIMIT 1";
             $result_select = $pdo->prepare($sql1);
             $result_select->execute();
             
@@ -256,7 +256,7 @@
             $sql1 =
             "SELECT ID_sw 
                 FROM Software 
-                WHERE sw_name $sw_name_s AND licence_type $licence_type_s AND number $number_s AND sw_key $sw_key_s AND version $version_s AND sw_note $sw_note_s";
+                WHERE sw_name $sw_name_s AND licence_type $licence_type_s AND number $number_s AND sw_key $sw_key_s AND version $version_s AND sw_note $sw_note_s LIMIT 1";
             
             $result_select = $pdo->prepare($sql1);
             $result_select->execute();
@@ -323,7 +323,7 @@
     function set_history_continue($pdo, $id_pc, $id_worker, $started_date) {
         if (!$id_worker == NULL) {
             $sql =
-            "SELECT * FROM Operating_history WHERE ID_pc = $id_pc AND finished_date IS NULL";
+            "SELECT * FROM Operating_history WHERE ID_pc = $id_pc AND finished_date IS NULL LIMIT 1";
             $result = $pdo->prepare($sql);
             $result->execute();
             $id_worker_old = NULL;
@@ -413,7 +413,7 @@
             
             $buff = htmlspecialchars($data['position']);
             if ($buff != "") {
-                $position = get_id($pdo, 'Worker', 'position', $buff, 'ID_worker');
+                $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
             } else {
                 $position = NULL;
             }
@@ -473,7 +473,7 @@
             "SELECT *
                 FROM Computer
                 WHERE manufacture_date $w1 AND bookkeeping_balance_sheet $w2 AND pc_name $w3 AND inventory_number $w4 AND manufacture_method $w5 AND doc_balance_num $w6 AND 
-                doc_balance_date $w7 AND installation_site_office $w8 AND installation_site_position $w9 AND responsible $w10";
+                doc_balance_date $w7 AND installation_site_office $w8 AND installation_site_position $w9 AND responsible $w10 LIMIT 1";
             $result = $pdo->prepare($sql);
             $result->execute();
             foreach($result as $row) {
@@ -656,7 +656,7 @@
                 
                 $buff = htmlspecialchars($data['position']);
                 if ($buff != "") {
-                    $position = get_id($pdo, 'Worker', 'position', $buff, 'ID_worker');
+                    $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
                 } else {
                     $position = NULL;
                 }
@@ -918,7 +918,7 @@
                         elseif ($value > $arr_hw_new[$key]) {
                             $diff = $value - $arr_hw_new[$key];
                             $sql =
-                            "SELECT ID_ihw FROM Installed_hardware WHERE ID_pc = $ID_pc AND ID_hw = $key";
+                            "SELECT ID_ihw FROM Installed_hardware WHERE ID_pc = $ID_pc AND ID_hw = $key LIMIT 1";
                             $result = $pdo->prepare($sql);
                             $result->execute();
                             $diff_now = 0;
@@ -1018,6 +1018,89 @@
             password = $password, permissions = $permissions WHERE login = $login";
         $result = $pdo->prepare($sql);
         $result->execute();
+    } elseif (isset($_POST["save_worker"])) {
+        $pdo = connect_db();
+        $data = $_POST;
+        $full_name = get_name_for_insert($data["full_name"]);
+        
+        $buff = trim(htmlspecialchars($data['position_manually']));
+        if ($buff != "") {
+            $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
+            if ($position == "") {
+                $sql =
+                "INSERT INTO Position (ID_pos, position) VALUES (NULL, '" . $buff . "')";
+                $result = $pdo->prepare($sql);
+                $result->execute();
+                $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
+            }
+        } else {
+            $buff = htmlspecialchars($data['position']);
+            if ($buff != "") {
+                $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
+            } else {
+                $position = NULL;
+            }
+        }
+        $position = get_name_for_insert($position);
+        
+        $buff = htmlspecialchars($data['office']);
+        if ($buff != "") {
+            $office = get_id($pdo, 'Office', 'office', $buff, 'ID_office');
+        } else {
+            $office = NULL;
+        }
+        $office = get_name_for_insert($office);
+        
+        $is_working = get_name_for_insert($_POST["is_working"]);
+        
+        $sql =
+        "INSERT INTO Worker (ID_worker, full_name, position, office, is_working) VALUES (NULL, $full_name, $position, $office, $is_working)";
+        echo $sql;
+        $result = $pdo->prepare($sql);
+        $result->execute();
+    } elseif (isset($_POST["update_worker"])) {
+        $pdo = connect_db();
+        $data = $_POST;
+        $full_name = get_name_for_insert($data["full_name"]);
+        
+        $buff = trim(htmlspecialchars($data['position_manually']));
+        if ($buff != "") {
+            $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
+            if ($position == "") {
+                $sql =
+                "INSERT INTO Position (ID_pos, position) VALUES (NULL, '" . $buff . "')";
+                $result = $pdo->prepare($sql);
+                $result->execute();
+                $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
+            }
+        } else {
+            $buff = htmlspecialchars($data['position']);
+            if ($buff != "") {
+                $position = get_id($pdo, 'Position', 'position', $buff, 'ID_pos');
+            } else {
+                $position = NULL;
+            }
+        }
+        $position = get_name_for_insert($position);
+        
+        $buff = htmlspecialchars($data['office']);
+        if ($buff != "") {
+            $office = get_id($pdo, 'Office', 'office', $buff, 'ID_office');
+        } else {
+            $office = NULL;
+        }
+        $office = get_name_for_insert($office);
+        
+        $is_working = get_name_for_insert($_POST["is_working"]);
+        
+        $ID_worker = get_name_for_insert($_GET['id']);
+        
+        $sql =
+        "UPDATE Worker SET 
+            full_name = $full_name, position = $position, office = $office, is_working = $is_working WHERE ID_worker = $ID_worker";
+        echo $sql;
+        $result = $pdo->prepare($sql);
+        $result->execute();
     }
     
     function delete_passport($pdo, $id_pc) {
@@ -1034,9 +1117,47 @@
         $result->execute();
     }
     
+    function is_responsible($pdo, $id_worker) {
+        $sql =
+        "SELECT * FROM Operating_history WHERE ID_worker = $id_worker LIMIT 1";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $res_row_count = $result->rowCount();
+        if ($res_row_count == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function is_responsible_now($pdo, $id_worker) {
+        $sql =
+        "SELECT * FROM Operating_history WHERE ID_worker = $id_worker AND finished_date IS NULL LIMIT 1";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $res_row_count = $result->rowCount();
+        if ($res_row_count == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function delete_worker($pdo, $id_worker) {
+        if (is_responsible($pdo, $id_worker)) {
+            print json_encode('Удаление невозможно, так как сотрудник является или являлся ответственным за эксплуатацию ПК');
+        } else {
+            $sql =
+            "DELETE FROM Worker WHERE ID_worker = $id_worker";
+            $result = $pdo->prepare($sql);
+            $result->execute();
+            print json_encode(NULL);
+        }
+    }
+    
     function is_pc_exist($pdo, $id_pc) {
         $sql =
-        "SELECT ID_pc FROM Computer WHERE ID_pc = $id_pc";
+        "SELECT ID_pc FROM Computer WHERE ID_pc = $id_pc LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $res_row_count = $result->rowCount();
@@ -1049,7 +1170,20 @@
     
     function is_user_exist($pdo, $login) {
         $sql =
-        "SELECT login FROM User WHERE login = $login";
+        "SELECT login FROM User WHERE login = $login LIMIT 1";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $res_row_count = $result->rowCount();
+        if ($res_row_count == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function is_worker_exist($pdo, $id) {
+        $sql =
+        "SELECT ID_worker FROM Worker WHERE ID_worker = $id LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $res_row_count = $result->rowCount();

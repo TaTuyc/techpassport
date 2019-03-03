@@ -2,11 +2,29 @@
     include_once 'action.php';
     $pdo_copy = connect_db();
     // разворачивание данных для создания отчёта
+    
+    function get_any_data_via_id ($pdo, $column_name, $table_name, $search_column_name, $value) {
+        if ($value != NULL) {
+            $sql =
+            "SELECT $column_name
+                FROM $table_name
+                WHERE $search_column_name = $value LIMIT 1";
+            $result = $pdo->prepare($sql);
+            $result->execute();
+            foreach($result as $row) {
+                return $row[$column_name];
+            }
+            return NULL;
+        } else {
+            return NULL;
+        }
+    }
+    
     function get_data_via_id ($pdo, $id_pc, $table_name, $column_name) {
         $sql =
         "SELECT $column_name
             FROM $table_name
-            WHERE ID_pc = $id_pc";
+            WHERE ID_pc = $id_pc LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         foreach($result as $row) {
@@ -22,7 +40,7 @@
             $sql =
             "SELECT $result_column
                 FROM $table_name_child
-                WHERE $column_name_child = $buff_id";
+                WHERE $column_name_child = $buff_id LIMIT 1";
             $result = $pdo->prepare($sql);
             $result->execute();
             foreach($result as $row) {
@@ -34,7 +52,7 @@
     }
     
     function get_responsible_since ($pdo, $id_pc) {
-        $sql = "SELECT started_date FROM Operating_history WHERE ID_pc = $id_pc AND finished_date IS NULL";
+        $sql = "SELECT started_date FROM Operating_history WHERE ID_pc = $id_pc AND finished_date IS NULL LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         foreach($result as $row) {
@@ -43,7 +61,7 @@
     }
     
     function get_worker_via_id ($pdo, $id_worker) {
-        $sql = "SELECT full_name FROM Worker WHERE ID_worker = $id_worker";
+        $sql = "SELECT full_name FROM Worker WHERE ID_worker = $id_worker LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         foreach($result as $row) {
@@ -100,16 +118,16 @@
         $sql =
         "SELECT *
             FROM Hardware
-            WHERE ID_hw = $id_hw";
+            WHERE ID_hw = $id_hw LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $result_array = array();
         foreach($result as $row) {
-            $result_array[0] = $row['hw_name'] == NULL ? '' : $row['hw_name'];
-            $result_array[1] = $row['description'] == NULL ? '' : $row['description'];
-            $result_array[2] = $row['feature'] == NULL ? '' : $row['feature'];
-            $result_array[3] = $row['hw_note'] == NULL ? '' : $row['hw_note'];
-            $result_array[4] = $row['category'] == NULL ? '' : $row['category'];
+            $result_array[] = $row['hw_name'] == NULL ? '' : $row['hw_name'];
+            $result_array[] = $row['description'] == NULL ? '' : $row['description'];
+            $result_array[] = $row['feature'] == NULL ? '' : $row['feature'];
+            $result_array[] = $row['hw_note'] == NULL ? '' : $row['hw_note'];
+            $result_array[] = $row['category'] == NULL ? '' : $row['category'];
         }
         print json_encode($result_array);
     }
@@ -118,16 +136,16 @@
         $sql =
         "SELECT *
             FROM Periphery
-            WHERE ID_pd = $id_pd";
+            WHERE ID_pd = $id_pd LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $result_array = array();
         foreach($result as $row) {
-            $result_array[0] = $row['pd_name'] == NULL ? '' : $row['pd_name'];
-            $result_array[1] = $row['pd_model'] == NULL ? '' : $row['pd_model'];
-            $result_array[2] = $row['feature'] == NULL ? '' : $row['feature'];
-            $result_array[3] = $row['pd_inventory_number'] == NULL ? '' : $row['pd_inventory_number'];
-            $result_array[4] = $row['category'] == NULL ? '' : $row['category'];
+            $result_array[] = $row['pd_name'] == NULL ? '' : $row['pd_name'];
+            $result_array[] = $row['pd_model'] == NULL ? '' : $row['pd_model'];
+            $result_array[] = $row['feature'] == NULL ? '' : $row['feature'];
+            $result_array[] = $row['pd_inventory_number'] == NULL ? '' : $row['pd_inventory_number'];
+            $result_array[] = $row['category'] == NULL ? '' : $row['category'];
         }
         print json_encode($result_array);
     }
@@ -136,24 +154,24 @@
         $sql =
         "SELECT *
             FROM Software
-            WHERE ID_sw = $id_sw";
+            WHERE ID_sw = $id_sw LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $result_array = array();
         foreach($result as $row) {
-            $result_array[0] = $row['sw_name'] == NULL ? '' : $row['sw_name'];
-            $result_array[1] = $row['licence_type'] == NULL ? '' : $row['licence_type'];
-            $result_array[2] = $row['number'] == NULL ? '' : $row['number'];
-            $result_array[3] = $row['sw_key'] == NULL ? '' : $row['sw_key'];
-            $result_array[4] = $row['version'] == NULL ? '' : $row['version'];
-            $result_array[5] = $row['sw_note'] == NULL ? '' : $row['sw_note'];
+            $result_array[] = $row['sw_name'] == NULL ? '' : $row['sw_name'];
+            $result_array[] = $row['licence_type'] == NULL ? '' : $row['licence_type'];
+            $result_array[] = $row['number'] == NULL ? '' : $row['number'];
+            $result_array[] = $row['sw_key'] == NULL ? '' : $row['sw_key'];
+            $result_array[] = $row['version'] == NULL ? '' : $row['version'];
+            $result_array[] = $row['sw_note'] == NULL ? '' : $row['sw_note'];
         }
         print json_encode($result_array);
     }
     
     function get_pas_info($pdo, $id_pc) {
         $sql =
-        "SELECT * FROM Computer WHERE ID_pc = $id_pc";
+        "SELECT * FROM Computer WHERE ID_pc = $id_pc LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $result_array = array();
@@ -211,7 +229,7 @@
         } elseif ($_POST['name'] == 'pc_place') {
             echo get_data_via_2id($pdo_copy, $_POST['id'], 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
         } elseif ($_POST['name'] == 'position') {
-            echo get_data_via_2id($pdo_copy, $_POST['id'], 'Computer', 'installation_site_position', 'Worker', 'ID_worker', 'position');
+            echo get_data_via_2id($pdo_copy, $_POST['id'], 'Computer', 'installation_site_position', 'Position', 'ID_pos', 'position');
         } elseif ($_POST['name'] == 'pc_inv_num') {
             echo get_data_via_id($pdo_copy, $_POST['id'], 'Computer', 'inventory_number');
         } elseif ($_POST['name'] == 'responsible_person') {
@@ -237,7 +255,7 @@
     
     function get_user_data($pdo, $login) {
         $sql =
-        "SELECT * FROM User WHERE login = $login";
+        "SELECT * FROM User WHERE login = $login LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $users = array();
@@ -247,5 +265,36 @@
             $users[] = $row['permissions'];
         }
         print json_encode($users);
+    }
+    
+    function get_workers_list($pdo) {
+        $sql =
+        "SELECT * FROM Worker";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['full_name'];
+            $result_array[] = get_any_data_via_id($pdo, 'position', 'Position', 'ID_pos', $row['position']);
+            $result_array[] = get_any_data_via_id($pdo, 'office', 'Office', 'ID_office', $row['office']);
+            $result_array[] = $row['is_working'] == NULL ? 'Работает' : 'Не работает';
+            $result_array[] = $row['ID_worker'];
+        }
+        print json_encode($result_array);
+    }
+    
+    function get_worker_data($pdo, $id) {
+        $sql =
+        "SELECT * FROM Worker WHERE ID_worker = $id LIMIT 1";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['full_name'];
+            $result_array[] = get_any_data_via_id($pdo, 'position', 'Position', 'ID_pos', $row['position']);
+            $result_array[] = get_any_data_via_id($pdo, 'office', 'Office', 'ID_office', $row['office']);
+            $result_array[] = $row['is_working'] == NULL ? 'Работает' : 'Не работает';
+        }
+        print json_encode($result_array);
     }
 ?>

@@ -14,7 +14,7 @@ if (isset($_SESSION['logged_user'])) {
 <head>
 	<meta charset="utf-8">
 	<!--Тип Кодировки-->
-	<title>Паспорт.</title>
+	<title>Паспорт</title>
 	<!--Заголовок-->
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script type="text/javascript" src="../script/jquery.js"></script>
@@ -43,7 +43,7 @@ if (isset($_SESSION['logged_user'])) {
 		<table id="pasport" class="table table-bordered table-hover ">
 			<thead>
 				<tr>
-					<th colspan="6">Паспорт Автоматизированного рабочего места</th>
+					<th colspan="6">Паспорт автоматизированного рабочего места</th>
 				</tr>
 			</thead>
 			<thead>
@@ -103,7 +103,7 @@ if (isset($_SESSION['logged_user'])) {
 						<select class="custom-select" name="position">
 							<option value=""> Должность
 							<?php
-                                get_db_list($pdo, 'Worker', 'position', '', '');
+                                get_db_list($pdo, 'Position', 'position', '', '');
                             ?>
 						</select>
 					</td>
