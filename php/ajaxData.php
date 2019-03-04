@@ -128,5 +128,11 @@ if (isset($_POST["mb_model"])) {
    echo is_worker_exist($pdo, $_POST["is_worker_exist"]);
 } elseif (isset($_POST["get_worker_data"])) {
    echo get_worker_data($pdo, $_POST["get_worker_data"]);
+} elseif (isset($_POST["get_offices_list"])) {
+   echo get_offices_list($pdo);
+} elseif (isset($_POST["delete_office"])) {
+   echo delete_office($pdo, $_POST["delete_office"]);
+} elseif (isset($_POST["update_office"])) {
+   echo update_office($pdo, $_POST["update_office"], htmlspecialchars($_POST["new_office_name"]));
 }
 ?>

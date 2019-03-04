@@ -297,4 +297,17 @@
         }
         print json_encode($result_array);
     }
+    
+    function get_offices_list($pdo) {
+        $sql =
+        "SELECT * FROM Office";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['office'];
+            $result_array[] = $row['ID_office'];
+        }
+        print json_encode($result_array);
+    }
 ?>

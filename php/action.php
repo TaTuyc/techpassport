@@ -603,9 +603,21 @@
             }
             set_history_start($pdo, $ID_pc, $responsible_person, $data['responsible_since']);
             $pdo->commit();
+            header('Location: ../list/index.php');
         } catch (Exception $e) {
+            echo '<!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Паспорт</title>
+                </head>
+                <body style="background-color: #c0c0c0">' .
+                '<div style="margin-top: 18%; width: 80%; margin-left: 10%; background-color: #eeeeee; border-radius: 10pt">
+                <p>&nbsp;
+                <p style="font-size:30pt; color: #800000; text-align: center">Ошибка записи: ' . $e->getMessage() . '.<p>&nbsp;</div>' .
+                '</body>
+                </html>';
             $pdo->rollBack();
-            echo "Ошибка при создании: ". $e->getMessage();
         }
     } elseif (isset($_POST['update_passport'])) {
         try {
@@ -985,8 +997,20 @@
                 set_history_continue($pdo, $ID_pc, $responsible_person, $data['responsible_since']);
             }
             $pdo->commit();
+            header('Location: ../list/index.php');
         } catch (Exception $e) {
-            echo 'Ошибка: ' . $e->getMessage();
+            echo '<!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Паспорт</title>
+                </head>
+                <body style="background-color: #c0c0c0">' .
+                '<div style="margin-top: 18%; width: 80%; margin-left: 10%; background-color: #eeeeee; border-radius: 10pt">
+                <p>&nbsp;
+                <p style="font-size:30pt; color: #800000; text-align: center">Ошибка записи: ' . $e->getMessage() . '.<p>&nbsp;</div>' .
+                '</body>
+                </html>';
             $pdo->rollBack();
         }
     } elseif (isset($_POST["save_repair"])) {
@@ -999,6 +1023,7 @@
         "INSERT INTO Repair (ID_rp, ID_pc, rp_type, rp_date, repairer) VALUES (NULL, $ID_pc, $rp_type, $rp_date, $repairer)";
         $result = $pdo->prepare($sql);
         $result->execute();
+        header('Location: ../repair_list/index.php?id=' . $_GET['id']);
     } elseif (isset($_POST["save_user"])) {
         $pdo = connect_db();
         $login = get_name_for_insert($_POST['login']);
@@ -1008,6 +1033,7 @@
         "INSERT INTO User (login, password, permissions) VALUES ($login, $password, $permissions)";
         $result = $pdo->prepare($sql);
         $result->execute();
+        header('Location: ../users_list/index.php');
     } elseif (isset($_POST["update_user"])) {
         $pdo = connect_db();
         $login = get_name_for_insert($_GET["login"]);
@@ -1018,6 +1044,7 @@
             password = $password, permissions = $permissions WHERE login = $login";
         $result = $pdo->prepare($sql);
         $result->execute();
+        header('Location: ../users_list/index.php');
     } elseif (isset($_POST["save_worker"])) {
         $pdo = connect_db();
         $data = $_POST;
@@ -1055,9 +1082,9 @@
         
         $sql =
         "INSERT INTO Worker (ID_worker, full_name, position, office, is_working) VALUES (NULL, $full_name, $position, $office, $is_working)";
-        echo $sql;
         $result = $pdo->prepare($sql);
         $result->execute();
+        header('Location: ../workers_list/index.php');
     } elseif (isset($_POST["update_worker"])) {
         $pdo = connect_db();
         $data = $_POST;
@@ -1098,9 +1125,17 @@
         $sql =
         "UPDATE Worker SET 
             full_name = $full_name, position = $position, office = $office, is_working = $is_working WHERE ID_worker = $ID_worker";
-        echo $sql;
         $result = $pdo->prepare($sql);
         $result->execute();
+        header('Location: ../workers_list/index.php');
+    } elseif (isset($_POST["create_office"])) {
+        $pdo = connect_db();
+        $office = get_name_for_insert($_POST["create_office"]);
+        $sql =
+        "INSERT INTO Office (ID_office, office) VALUES (NULL, $office)";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        header('Location: ../offices/index.php');
     }
     
     function delete_passport($pdo, $id_pc) {
@@ -1108,6 +1143,7 @@
         "DELETE FROM Computer WHERE ID_pc = $id_pc";
         $result = $pdo->prepare($sql);
         $result->execute();
+        header('Location: ../list/index.php');
     }
     
     function delete_user($pdo, $login) {
@@ -1115,6 +1151,7 @@
         "DELETE FROM User WHERE login = $login";
         $result = $pdo->prepare($sql);
         $result->execute();
+        header('Location: ../users_list/index.php');
     }
     
     function is_responsible($pdo, $id_worker) {
@@ -1152,6 +1189,33 @@
             $result = $pdo->prepare($sql);
             $result->execute();
             print json_encode(NULL);
+            header('Location: ../workers_list/index.php');
+        }
+    }
+    
+    function is_using($pdo, $id_office) {
+        $sql =
+        "SELECT * FROM Computer WHERE installation_site_office = $id_office LIMIT 1";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $res_row_count = $result->rowCount();
+        if ($res_row_count == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function delete_office($pdo, $id_office) {
+        if (is_using($pdo, $id_office)) {
+            print json_encode('Удаление невозможно, так как в базе данных присутствуют компьютеры в этом кабинете');
+        } else {
+            $sql =
+            "DELETE FROM Office WHERE ID_office = $id_office";
+            $result = $pdo->prepare($sql);
+            $result->execute();
+            print json_encode(NULL);
+            header('Location: ../offices/index.php');
         }
     }
     
@@ -1192,5 +1256,15 @@
         } else {
             return true;
         }
+    }
+    
+    function update_office($pdo, $id_office, $office_name) {
+        $office_name = get_name_for_insert($office_name);
+        $sql =
+        "UPDATE Office SET 
+            office = $office_name WHERE ID_office = $id_office";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        print json_encode(NULL);
     }
 ?>

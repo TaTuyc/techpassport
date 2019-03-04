@@ -38,6 +38,7 @@ if (isset($_SESSION['logged_user'])) {
 					if (data != 0) {
 						document.getElementById('new_user').setAttribute('disabled', 'disabled');
 						document.getElementById('users_list').setAttribute('disabled', 'disabled');
+						document.getElementById('offices').setAttribute('disabled', 'disabled');
 					}
 				}
 			}).responseText;
@@ -65,7 +66,7 @@ if (isset($_SESSION['logged_user'])) {
 		<p><input type="submit" class="btn btn-success" id="users_list" value="Список пользователей" onclick=location.href='users_list/index.php' title="Операторы и администраторы, имеющие доступ к системе"></p>
 		<p><input type="submit" class="btn btn-success" name="oper_list" value="Регистрация сотрудника" onclick=location.href='worker/index.php' title="Регистрация сотрудника в базе данных"></p> 
 		<p><input type="submit" class="btn btn-success" name="oper_list" value="Список сотрудников" onclick=location.href='workers_list/index.php' title="Все сотрудники в штате"></p>
-		<p><input type="button" class="btn btn-success" value="Кабинеты" onclick=location.href='#'></p>
+		<p><input type="button" class="btn btn-success" id="offices" value="Кабинеты" onclick=location.href='offices/index.php'></p>
 	</div>
 </body>
 
