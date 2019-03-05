@@ -18,7 +18,7 @@ if (isset($_SESSION['logged_user'])) {
 <head>
 	<meta charset="utf-8">
 	<!--Тип Кодировки-->
-	<title>Регистрация пользователя</title>
+	<title>Пользователь</title>
 	<!--Заголовок-->
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script type="text/javascript" src="../script/jquery.js"></script>

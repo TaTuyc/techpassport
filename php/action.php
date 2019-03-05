@@ -1136,6 +1136,64 @@
         $result = $pdo->prepare($sql);
         $result->execute();
         header('Location: ../offices/index.php');
+    } elseif (isset($_POST["save_pd"])) {
+        $pdo = connect_db();
+        $data = $_POST;
+        
+        $category = htmlspecialchars($data['category']);
+        if ($category == 2 || $category == 6) {
+            $feature = NULL;
+        } else {
+            $feature = get_right_value(htmlspecialchars($data['feature']), htmlspecialchars($data['feature_manually']));
+        }
+        if ($category == 6) {
+            $pd_name = 'Принтер';
+        } else {
+            $pd_name = get_right_value(htmlspecialchars($data['pd_name']), htmlspecialchars($data['pd_name_manually']));
+        }
+        $pd_model = get_right_value(htmlspecialchars($data['pd_model']), htmlspecialchars($data['pd_model_manually']));
+        $inv_num = trim(htmlspecialchars($data['pd_inv_num']));
+        
+        $pd_name = get_name_for_insert($pd_name);
+        $pd_model = get_name_for_insert($pd_model);
+        $feature = get_name_for_insert($feature);
+        $inv_num = get_name_for_insert($inv_num);
+        $category = get_name_for_insert($category);
+        $sql =
+        "INSERT INTO Periphery (ID_pd, ID_pc, pd_name, pd_model, feature, pd_inventory_number, category) VALUES (NULL, NULL, $pd_name, $pd_model, $feature, $inv_num, $category)";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        header('Location: ../periphery_list/index.php');
+    } elseif (isset($_POST["update_pd"])) {
+        $pdo = connect_db();
+        $data = $_POST;
+        
+        $ID_pd = $_GET['id'];
+        $category = htmlspecialchars($data['category']);
+        if ($category == 2 || $category == 6) {
+            $feature = NULL;
+        } else {
+            $feature = get_right_value(htmlspecialchars($data['feature']), htmlspecialchars($data['feature_manually']));
+        }
+        if ($category == 6) {
+            $pd_name = 'Принтер';
+        } else {
+            $pd_name = get_right_value(htmlspecialchars($data['pd_name']), htmlspecialchars($data['pd_name_manually']));
+        }
+        $pd_model = get_right_value(htmlspecialchars($data['pd_model']), htmlspecialchars($data['pd_model_manually']));
+        $inv_num = trim(htmlspecialchars($data['pd_inv_num']));
+        
+        $pd_name = get_name_for_insert($pd_name);
+        $pd_model = get_name_for_insert($pd_model);
+        $feature = get_name_for_insert($feature);
+        $inv_num = get_name_for_insert($inv_num);
+        $category = get_name_for_insert($category);
+        $sql =
+        "UPDATE Periphery SET
+            pd_name = $pd_name, pd_model = $pd_model, feature = $feature, pd_inventory_number = $inv_num, category = $category WHERE ID_pd = $ID_pd";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        header('Location: ../periphery_list/index.php');
     }
     
     function delete_passport($pdo, $id_pc) {
@@ -1219,6 +1277,14 @@
         }
     }
     
+    function delete_pd($pdo, $id_pd) {
+        $sql =
+        "DELETE FROM Periphery WHERE ID_pd = $id_pd";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        print json_encode(NULL);
+    }
+    
     function is_pc_exist($pdo, $id_pc) {
         $sql =
         "SELECT ID_pc FROM Computer WHERE ID_pc = $id_pc LIMIT 1";
@@ -1248,6 +1314,19 @@
     function is_worker_exist($pdo, $id) {
         $sql =
         "SELECT ID_worker FROM Worker WHERE ID_worker = $id LIMIT 1";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $res_row_count = $result->rowCount();
+        if ($res_row_count == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    function is_pd_exist($pdo, $id) {
+        $sql =
+        "SELECT ID_pd FROM Periphery WHERE ID_pd = $id LIMIT 1";
         $result = $pdo->prepare($sql);
         $result->execute();
         $res_row_count = $result->rowCount();

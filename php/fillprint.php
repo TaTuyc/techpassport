@@ -310,4 +310,45 @@
         }
         print json_encode($result_array);
     }
+    
+    function get_pd_list($pdo) {
+        $sql =
+        "SELECT * FROM Periphery WHERE ID_pc IS NULL";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['pd_name'];
+            $result_array[] = $row['pd_model'];
+            $result_array[] = $row['feature'] == NULL ? '' : $row['feature'];
+            $result_array[] = $row['pd_inventory_number'] == NULL ? '' : $row['pd_inventory_number'];
+            if ($row['category'] == 2) {
+                $result_array[] = 'Устройство отображения';
+            } elseif ($row['category'] == 6) {
+                $result_array[] = 'Печатающее устройство';
+            } elseif ($row['category'] == 7) {
+                $result_array[] = 'Другие периферийные устройства';
+            } else {
+                $result_array[] = $row['category'];
+            }
+            $result_array[] = $row['ID_pd'];
+        }
+        print json_encode($result_array);
+    }
+    
+    function get_pd_data($pdo, $id_pd) {
+        $sql =
+        "SELECT * FROM Periphery WHERE ID_pd = $id_pd LIMIT 1";
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['category'];
+            $result_array[] = $row['pd_name'];
+            $result_array[] = $row['pd_model'];
+            $result_array[] = $row['feature'] == NULL ? '' : $row['feature'];
+            $result_array[] = $row['pd_inventory_number'] == NULL ? '' : $row['pd_inventory_number'];
+        }
+        print json_encode($result_array);
+    }
 ?>

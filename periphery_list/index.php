@@ -16,129 +16,126 @@ if (isset($_SESSION['logged_user'])) {
 <head>
 	<meta charset="utf-8">
 	<!--Тип Кодировки-->
-	<title>Список сотрудников</title>
+
+	<title>Список периферийных устройств</title>
 	<!--Заголовок-->
+
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script type="text/javascript" src="../script/jquery.js"></script>
 	<script type="text/javascript" src="../script/parsing.js"></script>
 	<script type="text/javascript" src="../script/dynamicTable.js"></script>
 	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
-    <script type="text/javascript">
+	<script type="text/javascript">
 		function get_delete_confirmation(id) {
-			var answer = confirm("Удалить сотрудника из базы данных?");
-			var is_responsible = false;
+			var answer = confirm("Удалить устройство из базы данных?");
 			if (answer) {
 				var x = $.ajax({
 					type: 'POST',
 					url: '../php/ajaxData.php',
 					async: false,
 					data: {
-						delete_worker: id},
+						delete_pd: id},
 					dataType: "json",
 					success: function(data){
-						if (data != null) {
-							alert(data);
-							is_responsible = true;
-							return;
-						}
 					}
 				}).responseText;
-				if (!is_responsible) {
-					document.location.reload(true);
-				}
+				document.location.reload(true);
 			}
 		}
 		
-		function is_worker_exist(id, call_type) {
+		function is_pd_exist(id, call_type) {
 			var answer = false;
 			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
 				async: false,
 				data: {
-					is_worker_exist: id},
+					is_pd_exist: id},
 				dataType: "json",
 				success: function(data){
 					answer = data;
 				}
 			}).responseText;
 			if (!answer) {
-				alert("Сотрудник удалён из базы данных, страница будет перезагружена.");
+				alert("Устройство удалено из базы данных, страница будет перезагружена.");
 				document.location.reload(true);
 			} else {
 				if (call_type == 'edit') {
-					document.location.href = '../worker/index.php?id=' + id;
+					document.location.href = '../periphery/index.php?id=' + id;
 				}
 			}
 		}
 		
-        function get_workers_list() {
+		function get_pd_list() {
 			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
 				async: false,
 				data: {
-					get_workers_list: ''},
+					get_pd_list: ''},
 				dataType: "json",
 				success: function(data){
-					rows = data.length / 5;
+					rows = data.length / 6;
 					dl = data.length;
-					for (i = 0; i < dl; i++) {
-						if (data[i] == null) {
-							data[i] = '';
-						}
-					}
                     buff = '';
 					for (i = 0; i < rows; i++) {
 						buff +=
                         '<tr>' +
-                            '<td>' + data[i * 5] + '</td>' +
-                            '<td>' + data[i * 5 + 1] + '</td>' +
-                            '<td>' + data[i * 5 + 2] + '</td>' +
-							'<td>' + data[i * 5 + 3] + '</td>' +
-							'<td><button type="button" class="del btn btn-danger" onclick="get_delete_confirmation(' + data[i * 5 + 4] + ')">Удалить</button></td>' +
-							'<td><button type="button" class="chng btn btn-primary" style="width: 100%" onclick="is_worker_exist(' + data[i * 5 + 4] + ', \'edit\')">Изменить</button></td>' +
+                            '<td>' + data[i * 6] + '</td>' +
+                            '<td>' + data[i * 6 + 1] + '</td>' +
+                            '<td>' + data[i * 6 + 2] + '</td>' +
+							'<td>' + data[i * 6 + 3] + '</td>' +
+							'<td>' + data[i * 6 + 4] + '</td>' +
+							'<td><button type="button" class="del btn btn-danger" onclick="get_delete_confirmation(' + data[i * 6 + 5] + ')">Удалить</button></td>' +
+							'<td><button type="button" class="chng btn btn-primary" style="width: 100%" onclick="is_pd_exist(' + data[i * 6 + 5] + ', \'edit\')">Изменить</button></td>' +
                         '</tr>';
                     }
-					$('#workers').html(buff);
+					$('#pd_list').html(buff);
 				}
 			}).responseText;
 		}
-    </script>
+	</script>
 </head>
 
 <!--Тушка-->
 
 <body>
-	<div class="table-responsive text-center" style="width: 70%; margin: auto">
+	<div class="table-responsive text-center" style="width: 80%; margin: auto">
 		<div style="text-align: right">
-            <p style="margin: 0; font-size: 16pt">Здравствуйте,
-            <?php
-                echo " " . $_SESSION['logged_user'] . "!";
-            ?>
-            </p>
-            <button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
-        </div>
-		<h1>Список сотрудников</h1>
-        <table id="new_worker" class="table table-bordered table-hover" style="margin-top: 20px">
-			<tbody style="background-color: #D3D3D3">
+			<p style="margin: 0; font-size: 16pt">Здравствуйте,
+			<?php
+				echo " " . $_SESSION['logged_user'] . "!";
+			?>
+			</p>
+			<button type="button" class="btn btn-info" style="width: 90px" onclick=location.href='../php/logout.php'>Выйти</button>
+		</div>
+		<table id="per_reg" class="table table-bordered table-hover " style="margin-top: 20px">
+			<thead>
 				<tr>
-					<th>ФИО сотрудника</th>
-					<th>Должность</th>
-					<th>Кабинет</th>
-					<th>Статус</th>
-					<th colspan="2">Действия</th>
+					<th style="background-color: #8FBC8F" colspan="7">Список периферийных устройств</th>
 				</tr>
-			</tbody>
-			<tbody id="workers">
-			</tbody>
+            </thead>
+
+            <tbody>
+                <tr style="background-color: #D3D3D3">
+					<th>Наименование</th>
+					<th>Описание</th>
+					<th>Характеристика</th>
+					<th>Инвентарный номер</th>
+					<th>Категория</th>
+					<th colspan="2">Действия</th>
+                </tr>
+            </tbody>
+			
+      		<tbody id="pd_list">
+            </tbody>
         </table>
 	</div>
 </body>
 
 </html>
 <?php
-	echo '<script type="text/javascript"> get_workers_list(); </script>';
+	echo '<script type="text/javascript"> get_pd_list(); </script>';
 } else {
 	echo '<!DOCTYPE html>
 	<html>

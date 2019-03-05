@@ -48,10 +48,7 @@ function eventChange(parent_id, call_type, name_, category_, index_) {
             async: false,
             data: {
                 is_call: call_type,
-                parent: parent_var,
-                name: name_,
-                category: category_,
-                index: index_
+                parent: parent_var
             }, success: function(html){
                 if (call_type == 1) {
                     $('#description_c' + category_ + '_elem' + index_).html(html);

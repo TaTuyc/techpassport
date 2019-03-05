@@ -28,14 +28,9 @@ if (isset($_POST["mb_model"])) {
     }
 } elseif (isset($_POST["is_call"])) {
    $parent_value = $_POST["parent"];
-   $name = $_POST["name"];
    if ($_POST["is_call"] == '1') {
-      $index = $_POST["index"];
-      $category = $_POST["category"];
-      if ($name == 'hw_name') {
-         if (get_db_list($pdo, 'Hardware', 'hw_name', $parent_value, 'description') && get_db_list($pdo, 'Periphery', 'pd_name', $parent_value, 'pd_model')) {
-            echo '<option value="">';
-         }
+      if (get_db_list($pdo, 'Hardware', 'hw_name', $parent_value, 'description') && get_db_list($pdo, 'Periphery', 'pd_name', $parent_value, 'pd_model')) {
+         echo '<option value="">';
       }
    } elseif ($_POST["is_call"] == 'f') {
       if (get_db_list($pdo, 'Hardware', 'description', $parent_value, 'feature') && get_db_list($pdo, 'Periphery', 'pd_model', $parent_value, 'feature')) {
@@ -66,15 +61,16 @@ if (isset($_POST["mb_model"])) {
          echo '<option value="">';
       }
    } elseif ($_POST["is_call"] == '3') {
-      $category = $_POST["category"];
-      if ($name == 'description') {
-         if (get_db_list($pdo, 'Hardware', 'description', $parent_value, 'feature')) {
-            echo '<option value="">';
-         }
+      if (get_db_list($pdo, 'Hardware', 'description', $parent_value, 'feature')) {
+         echo '<option value="">';
       }
    } elseif ($_POST["is_call"] == '3n') {
       if (get_db_list($pdo, 'Hardware', 'description', $parent_value, 'hw_note')) {
          echo '<option value="">';
+      }
+   } elseif ($_POST["is_call"] == 'pd_cat') {
+      if (get_db_list($pdo, 'Periphery', 'category', $parent_value, 'pd_name')) {
+         echo '<option value="">Выберите тип устройства';
       }
    }
 } elseif (isset($_POST["print_data"])) {
@@ -134,5 +130,13 @@ if (isset($_POST["mb_model"])) {
    echo delete_office($pdo, $_POST["delete_office"]);
 } elseif (isset($_POST["update_office"])) {
    echo update_office($pdo, $_POST["update_office"], htmlspecialchars($_POST["new_office_name"]));
+} elseif (isset($_POST["get_pd_list"])) {
+   echo get_pd_list($pdo);
+} elseif (isset($_POST["delete_pd"])) {
+   echo delete_pd($pdo, $_POST["delete_pd"]);
+} elseif (isset($_POST["is_pd_exist"])) {
+   echo is_pd_exist($pdo, $_POST["is_pd_exist"]);
+} elseif (isset($_POST["get_pd_data"])) {
+   echo get_pd_data($pdo, $_POST["get_pd_data"]);
 }
 ?>

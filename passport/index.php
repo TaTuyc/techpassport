@@ -218,7 +218,7 @@ if (isset($_SESSION['logged_user'])) {
 			<tbody id="storage">
 
 				<tr>
-					<th colspan="6" style="background-color: #D3D3D3">Хранение данных:</th>
+					<th colspan="6" style="background-color: #D3D3D3; text-align: left">Хранение данных:</th>
 				</tr>
 
 				<tbody id="dynamic_stor">
@@ -268,7 +268,7 @@ if (isset($_SESSION['logged_user'])) {
 
 			<tbody id="display">
 				<tr>
-					<th colspan="6" style="background-color: #D3D3D3">Отображение:</th>
+					<th colspan="6" style="background-color: #D3D3D3; text-align: left">Отображение:</th>
 				</tr>
 
 				<tbody id="dynamic_disp">
@@ -327,7 +327,7 @@ if (isset($_SESSION['logged_user'])) {
 
 			<tbody id="multi">
 				<tr>
-					<th colspan="6" style="background-color: #D3D3D3">Мультимедиа:</th>
+					<th colspan="6" style="background-color: #D3D3D3; text-align: left">Мультимедиа:</th>
 				</tr>
 
 				<tbody id="dynamic_mult">
@@ -372,7 +372,7 @@ if (isset($_SESSION['logged_user'])) {
 
 			<tbody id="network">
 				<tr>
-					<th colspan="6" style="background-color: #D3D3D3">Сеть:</th>
+					<th colspan="6" style="background-color: #D3D3D3; text-align: left">Сеть:</th>
 				</tr>
 
 				<tbody id="dynamic_net">
@@ -464,7 +464,7 @@ if (isset($_SESSION['logged_user'])) {
 
 				<tbody id="perepherals">
 					<tr>
-						<th colspan="6" style="background-color: #D3D3D3">Другие периферийные устройства:</th>
+						<th colspan="6" style="background-color: #D3D3D3; text-align: left">Другие периферийные устройства:</th>
 					</tr>
 
 					<tbody id="dynamic_per">
@@ -491,7 +491,7 @@ if (isset($_SESSION['logged_user'])) {
 								<input type="text" class="input-group-text" name="feature_manually_c7" placeholder="Ручной ввод" maxlength="10" pattern="[0-9]{0,10}">
 							</td>
 							<td>
-								<p style="color: blue; margin: 0; padding: 0">инв.номер:</p>
+								<p style="color: blue; margin: 0; padding: 0; font-weight: bold">инв.номер:</p>
 								<input type="text" class="input-group-text" id="pd_inv_num_c7" name="pd_inv_num_c7" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
 							</td>
 							<td>
