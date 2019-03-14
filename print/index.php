@@ -295,7 +295,7 @@ if (isset($_SESSION['logged_user'])) {
 					</td>
 					<td>
 						<?php
-                            echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_position', 'Worker', 'ID_worker', 'position');
+                            echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_position', 'Position', 'ID_pos', 'position');
                         ?>
 					</td>
 				</tr>
