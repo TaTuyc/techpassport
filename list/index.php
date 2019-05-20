@@ -29,7 +29,7 @@ if (isset($_SESSION['logged_user'])) {
 
 <body>
 	<div style="display: flex; width: 80%; margin: auto">
-		<div style="text-align: left; width: 50%">
+		<div id="page_settings" style="text-align: left; width: 50%">
 			<p>Количество страниц для просмотра</p>
 			<a onclick="set_portion_size(2);">&nbsp;2</a>
 			<a onclick="set_portion_size(3);">&nbsp;3</a>
@@ -62,6 +62,26 @@ if (isset($_SESSION['logged_user'])) {
 					<th scope="row" style="width: 25%">Кабинет</th>
 					<th scope="row" style="width: 25%">Инвентарный номер</th>
 					<th scope="row" colspan="6">Действия</th>
+				</tr>
+				
+				<tr style="background-color: #D3D3D3">
+					<td>
+						<input id="search_pc_name" type="text" class="input-group-text" placeholder="Имя" maxlength="20">
+					</td>
+					<td>
+						<select id="search_pc_place" class="custom-select">
+							<option value=""> Кабинет
+							<?php
+								get_db_list($pdo, 'Office', 'office', '', '');
+							?>
+						</select>
+					</td>
+					<td>
+						<input id="search_pc_inv_num" type="text" class="input-group-text" placeholder="Номер" maxlength="20" pattern="[0-9]{0,20}">
+					</td>
+					<td scope="row" colspan="6">
+						<button id="search_passport" type="button" class="chng btn btn-primary" onclick="search_pc()">Поиск по заданным полям</button>
+					</td>		
 				</tr>
 
 				<tbody id="pas_list">

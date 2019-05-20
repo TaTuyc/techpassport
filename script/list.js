@@ -163,3 +163,47 @@ function set_block() {
         }
     }).responseText;
 }
+
+function search_pc() {
+    pc_name     = document.getElementById('search_pc_name').value;
+    pc_place    = document.getElementById('search_pc_place').value;
+    pc_inv_num  = document.getElementById('search_pc_inv_num').value;
+    $.ajax({
+        type: 'POST',
+        url: '../php/ajaxData.php',
+        data: {
+            search_pc:  '',
+            pc_name:    pc_name,
+            pc_place:   pc_place,
+            pc_inv_num: pc_inv_num},
+        dataType: "json",
+        success: function(data){
+            data_size = data.length;
+            if (data_size == 0) {
+                buff = '<tr><td colspan="9">Ничего не найдено</td></tr>';
+            } else {
+                for (i = 0; i < data_size; i++) {
+                    if (data[i] == null) {
+                        data[i] = '';
+                    }
+                }
+                data_size = data_size / 4;
+                var buff = '';
+                for (i = 0; i < data_size; i++) {
+                    buff += 
+                        '<tr><td>' + data[i * 4] + '</td><td>' + data[i * 4 + 1] + '</td><td>' + data[i * 4 + 2] + '</td>' + 
+                        '<td><button type="button" class="del btn btn-danger" name="delete_button" onclick="get_delete_confirmation(' + data[i * 4 + 3] + ')">Удалить</button></td>' +
+                        '<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'edit\')">Изменить</button></td>' +
+                        '<td><button type="button" class="fix btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'repair\')">Ремонт</button></td>' +
+                        '<td><button type="button" class="exp btn btn-success" name="expbtn_' + data[i * 4 + 3] + '">Экспорт</button></td>' +
+                        '<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'history\')">Ответственный</button></td>' +
+                        '<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'get_repair\')">Ремонты</button></td>';
+                }
+            }
+            document.getElementById('num_pages').style.display = "none";
+            $('#page_settings').html('');
+            $('#pas_list').html('');
+            $('#pas_list').html(buff);
+        }
+    });
+}

@@ -138,5 +138,7 @@ if (isset($_POST["mb_model"])) {
    echo is_pd_exist($pdo, $_POST["is_pd_exist"]);
 } elseif (isset($_POST["get_pd_data"])) {
    echo get_pd_data($pdo, $_POST["get_pd_data"]);
+} elseif (isset($_POST["search_pc"])) {
+   search_pc($pdo, $_POST["pc_name"], $_POST["pc_place"], $_POST["pc_inv_num"]);
 }
 ?>

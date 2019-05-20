@@ -159,6 +159,22 @@
         }
     }
     
+    function get_name_for_search($var) {
+        if ($var == '') {
+            return '';
+        } else {
+            return " = '" . htmlspecialchars_decode($var) . "'";
+        }
+    }
+    
+    function get_name_for_search_contains($column, $var) {
+        if ($var == '') {
+            return '';
+        } else {
+            return " instr($column, '" . htmlspecialchars_decode($var) . "')";
+        }
+    }
+    
     function get_hw_id ($pdo, $hw_name, $description, $feature, $hw_note, $category) {
         $hw_id = NULL;
         $hw_name_s = get_name_for_select($hw_name);
@@ -1345,5 +1361,57 @@
         $result = $pdo->prepare($sql);
         $result->execute();
         print json_encode(NULL);
+    }
+    
+    function search_pc($pdo, $pc_name, $pc_place, $pc_inv_num) {
+        $name       = get_name_for_search_contains('pc_name', $pc_name);
+        $place      = get_name_for_search(get_id($pdo, 'Office', 'office', $pc_place, 'ID_office'));
+        $inv_num    = get_name_for_search_contains('inventory_number', $pc_inv_num);
+        
+        $start = "SELECT * FROM Computer WHERE ";
+        $sql1 = "$name";
+        $sql2 = "installation_site_office $place";
+        $sql3 = "$inv_num";
+                
+        $num =  $name       == '' ? 0 :   1;
+        $num += $place      == '' ? 0 :  10;
+        $num += $inv_num    == '' ? 0 : 100;
+        
+        switch ($num) {
+            case 0:
+                $sql = "SELECT * FROM Computer";
+                break;
+            case 1:
+                $sql = $start . $sql1;
+                break;
+            case 10:
+                $sql = $start . $sql2;
+                break;
+            case 11:
+                $sql = "$start $sql1 AND $sql2";
+                break;
+            case 100:
+                $sql = $start . $sql3;
+                break;
+            case 101:
+                $sql = "$start $sql1 AND $sql3";
+                break;
+            case 110:
+                $sql = "$start $sql2 AND $sql3";
+                break;
+            case 111:
+                $sql = "$start $sql1 AND $sql2 AND $sql3";
+                break;
+        }
+        $result = $pdo->prepare($sql);
+        $result->execute();
+        $result_array = array();
+        foreach($result as $row) {
+            $result_array[] = $row['pc_name'];
+            $result_array[] = get_data_via_2id($pdo, $row['ID_pc'], 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
+            $result_array[] = $row['inventory_number'] == NULL ? '' : $row['inventory_number'];
+            $result_array[] = $row['ID_pc'];
+        }
+        print json_encode($result_array);
     }
 ?>
