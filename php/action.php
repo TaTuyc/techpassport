@@ -380,6 +380,24 @@
         }
     };
     
+    function is_worker_not_exist($pdo, $position) {
+        $pos_param = get_id($pdo, 'Position', 'position', $position, 'ID_pos');
+        if ($pos_param == '') {
+            return true;
+        } else {
+            $sql =
+            "SELECT is_working FROM Worker WHERE position = $pos_param";
+            $result = $pdo->prepare($sql);
+            $result->execute();
+            foreach($result as $row) {
+                if ($row['is_working'] != '1') {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    
     if (isset($_POST['save_passport'])){
         try {
             $pdo = connect_db();
@@ -1084,7 +1102,6 @@
                 $position = NULL;
             }
         }
-        $position = get_name_for_insert($position);
         
         $buff = htmlspecialchars($data['office']);
         if ($buff != "") {
@@ -1096,11 +1113,34 @@
         
         $is_working = get_name_for_insert($_POST["is_working"]);
         
-        $sql =
-        "INSERT INTO Worker (ID_worker, full_name, position, office, is_working) VALUES (NULL, $full_name, $position, $office, $is_working)";
-        $result = $pdo->prepare($sql);
-        $result->execute();
-        header('Location: ../workers_list/index.php');
+        if ($_POST["is_working"] != '1') {
+            if ($_POST['position'] == 'Заместитель директора по основной работе' | $_POST['position'] == 'Заведующий отделом автоматизации') {
+                if (is_worker_not_exist($pdo, 'Заместитель директора по основной работе') && is_worker_not_exist($pdo, 'Заведующий отделом автоматизации')) {
+                    $position = get_name_for_insert($position);
+                    $sql =
+                    "INSERT INTO Worker (ID_worker, full_name, position, office, is_working) VALUES (NULL, $full_name, $position, $office, $is_working)";
+                    $result = $pdo->prepare($sql);
+                    $result->execute();
+                    header('Location: ../workers_list/index.php');
+                } else {
+                    header('Location: ../workers_list/index.php?err=1');
+                }
+            } else {
+                $position = get_name_for_insert($position);
+                $sql =
+                "INSERT INTO Worker (ID_worker, full_name, position, office, is_working) VALUES (NULL, $full_name, $position, $office, $is_working)";
+                $result = $pdo->prepare($sql);
+                $result->execute();
+                header('Location: ../workers_list/index.php');
+            }            
+        } else {
+            $position = get_name_for_insert($position);
+            $sql =
+            "INSERT INTO Worker (ID_worker, full_name, position, office, is_working) VALUES (NULL, $full_name, $position, $office, $is_working)";
+            $result = $pdo->prepare($sql);
+            $result->execute();
+            header('Location: ../workers_list/index.php');
+        }
     } elseif (isset($_POST["update_worker"])) {
         $pdo = connect_db();
         $data = $_POST;
@@ -1142,8 +1182,40 @@
         "UPDATE Worker SET 
             full_name = $full_name, position = $position, office = $office, is_working = $is_working WHERE ID_worker = $ID_worker";
         $result = $pdo->prepare($sql);
-        $result->execute();
-        header('Location: ../workers_list/index.php');
+        
+        if ($_POST["is_working"] != '1') {
+            if ($_POST['position'] == 'Заместитель директора по основной работе' | $_POST['position'] == 'Заведующий отделом автоматизации') {
+                if (is_worker_not_exist($pdo, 'Заместитель директора по основной работе') && is_worker_not_exist($pdo, 'Заведующий отделом автоматизации')) {
+                    $result->execute();
+                    header('Location: ../workers_list/index.php');
+                } else {
+                    $pos_id = get_id($pdo, 'Position', 'position', $_POST['position'], 'ID_pos');
+                    $sql2 =
+                    "SELECT ID_worker FROM Worker WHERE position = $pos_id AND is_working IS NULL LIMIT 1";
+                    $result2 = $pdo->prepare($sql2);
+                    $result2->execute();
+                    foreach($result2 as $row2) {
+                        if ($row2['ID_worker'] != $_GET['id']) {
+                            header('Location: ../workers_list/index.php?err=1');
+                            return;
+                        } else {
+                            $result->execute();
+                            header('Location: ../workers_list/index.php');
+                            return;
+                        }
+                    }
+                    $result->execute();
+                    header('Location: ../workers_list/index.php');
+                    return;
+                }
+            } else {
+                $result->execute();
+                header('Location: ../workers_list/index.php');
+            }            
+        } else {
+            $result->execute();
+            header('Location: ../workers_list/index.php');
+        }
     } elseif (isset($_POST["create_office"])) {
         $pdo = connect_db();
         $office = get_name_for_insert($_POST["create_office"]);

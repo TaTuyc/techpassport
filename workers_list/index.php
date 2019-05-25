@@ -104,6 +104,10 @@ if (isset($_SESSION['logged_user'])) {
 				}
 			}).responseText;
 		}
+		
+		function show_error() {
+			alert("Произошла ошибка записи в базу данных!\nЗаместитель директора по основной работе и заведующий отделом автоматизации,\nработающие сейчас, должны быть одни на весь список сотрудников.");
+		}
     </script>
 </head>
 
@@ -138,7 +142,11 @@ if (isset($_SESSION['logged_user'])) {
 
 </html>
 <?php
-	echo '<script type="text/javascript"> get_workers_list(); </script>';
+	echo '<script type="text/javascript"> get_workers_list();';
+	if (isset($_GET['err'])) {
+		echo 'show_error();';
+	}
+	echo '</script>';
 } else {
 	echo '<!DOCTYPE html>
 	<html>
