@@ -93,7 +93,7 @@ function get_portion(id_page) {
                     '<td><button type="button" class="del btn btn-danger" name="delete_button" onclick="get_delete_confirmation(' + data[i * 4 + 3] + ')">Удалить</button></td>' +
                     '<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'edit\')">Изменить</button></td>' +
                     '<td><button type="button" class="fix btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'repair\')">Ремонт</button></td>' +
-                    '<td><button type="button" class="exp btn btn-success" name="expbtn_' + data[i * 4 + 3] + '">Экспорт</button></td>' +
+                    '<td><button type="button" class="exp btn btn-success" onclick="document.location.href=\'../print/index.php?id=' + data[i * 4 + 3] + '\'">Экспорт</button></td>' +
                     '<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'history\')">Ответственный</button></td>' +
                     '<td><button type="button" class="chng btn btn-primary" onclick="is_pc_exist(' + data[i * 4 + 3] + ', \'get_repair\')">Ремонты</button></td>';
             }

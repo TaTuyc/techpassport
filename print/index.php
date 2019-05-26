@@ -211,7 +211,7 @@ if (isset($_SESSION['logged_user'])) {
 	</script>
 	<?php
         $pdo = connect_db();
-        $ID_pc = 29;
+        $ID_pc = $_GET['id'];
     ?>
 	<style>
 		* {
@@ -436,7 +436,24 @@ if (isset($_SESSION['logged_user'])) {
 				<tbody id="dynamic_sw">
 				</tbody>
 			</tbody>
-
+			
+			<tbody>
+				<tr>
+					<th colspan="3">Заместитель директора по основной работе</th>
+					<th colspan="3">Заведующий отделом автоматизации</th>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<?php
+							echo get_workers_name($pdo, 'Заместитель директора по основной работе');
+						?>
+					</td>
+					<td colspan="3">
+						<?php
+							echo get_workers_name($pdo, 'Заведующий отделом автоматизации');
+						?>
+					</td>
+				</tr>
 			</tbody>
 
 		</table>
