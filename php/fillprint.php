@@ -354,13 +354,15 @@
     
     function get_workers_name($pdo, $position) {
         $pos_id = get_id($pdo, 'Position', 'position', $position, 'ID_pos');
-        $sql =
-        "SELECT full_name FROM Worker WHERE position = $pos_id AND is_working IS NULL LIMIT 1";
-        $result = $pdo->prepare($sql);
-        $result->execute();
-        foreach($result as $row) {
-            return $row['full_name'];
-        }
+        if ($pos_id != '') {
+            $sql =
+            "SELECT full_name FROM Worker WHERE position = $pos_id AND is_working IS NULL LIMIT 1";
+            $result = $pdo->prepare($sql);
+            $result->execute();
+            foreach($result as $row) {
+                return $row['full_name'];
+            }
+        }        
         return '';
     }
 ?>
