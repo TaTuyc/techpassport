@@ -19,11 +19,13 @@ if (isset($_SESSION['logged_user'])) {
 	<!--Заголовок-->
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script type="text/javascript" src="../script/jquery.js"></script>
+	<script type="text/javascript" src="../script/xepOnline.jqPlugin.js"></script>
+
 	<script type="text/javascript" src="../script/parsing.js"></script>
 	<script type="text/javascript" src="../script/dynamicTable.js"></script>
 	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
     <script type="text/javascript">
-		
+
 		function get_hw_item(id_hw) {
 			$.ajax({
 				type: 'POST',
@@ -56,29 +58,29 @@ if (isset($_SESSION['logged_user'])) {
 					} else if (data[4] == '1') {
 						buff = document.getElementById('dynamic_stor').innerHTML;
 						$('#dynamic_stor').html(
-							buff + '<tr><td>' + data[0] + '</td><td colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2">' + data[3] + '</td></tr>');
+							buff + '<tr><td class="nameright">' + data[0] + '</td><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					} else if (data[4] == '2') {
 						buff = document.getElementById('dynamic_disp').innerHTML;
 						$('#dynamic_disp').html(
-							buff + '<tr><td>' + data[0] + '</td><td colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2">' + data[3] + '</td></tr>');
+							buff + '<tr><td class="nameright">' + data[0] + '</td><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					} else if (data[4] == '3') {
 						buff = document.getElementById('dynamic_mult').innerHTML;
 						$('#dynamic_mult').html(
-							buff + '<tr><td>' + data[0] + '</td><td colspan="2">' + data[1] + '</td><td></td><td colspan="2">' + data[3] + '</td></tr>');
+							buff + '<tr><td class="nameright">' + data[0] + '</td><td colspan="2" class="nameleft">' + data[1] + '</td><td></td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					} else if (data[4] == '4') {
 						buff = document.getElementById('dynamic_net').innerHTML;
 						$('#dynamic_net').html(
-							buff + '<tr><td>' + data[0] + '</td><td colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2">' + data[3] + '</td></tr>');
+							buff + '<tr><td class="nameright">' + data[0] + '</td><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					} else if (data[4] == '5') {
 						buff = document.getElementById('case').innerHTML;
 						$('#case').html(
-							'<tr><th scope="row">Корпус</th><td colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2">' + data[3] + '</td></tr>');
+							'<tr><th scope="row" class="nameleft">Корпус</th><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					}
 					//console.log(data[0] + '   ' + data[1] + '   ' + data[2] + '   ' + data[3] + '   ' + data[4]);
 				}
 			});
 		}
-		
+
 		function get_pd_item(id_pd) {
 			$.ajax({
 				type: 'POST',
@@ -98,23 +100,23 @@ if (isset($_SESSION['logged_user'])) {
 						buff = document.getElementById('dynamic_disp').innerHTML;
 						//console.log('периферия////');
 						$('#dynamic_disp').html(
-							buff + '<tr><td>' + data[0] + '</td><td colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2">' + data[3] + '</td></tr>');	
+							buff + '<tr><td class="nameright">' + data[0] + '</td><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					} else if (data[4] == '6') {
 						buff = document.getElementById('printer').innerHTML;
 						$('#printer').html(
-							'<tr><th scope="row">Принтер</th><td colspan="2">' + data[1] + '</td><th style="color: blue">инв.номер:</th><td colspan="2">' + data[3] + '</td></tr>');
+							'<tr><th scope="row" class="nameleft">Принтер</th><td colspan="2" class="nameleft">' + data[1] + '</td><th style="color: blue">инв.номер:</th><th colspan="2">' + data[3] + '</th></tr>');
 					} else if (data[4] == '7') {
 						buff = document.getElementById('dynamic_per').innerHTML;
 						$('#dynamic_per').html(
-							buff + '<tr><td>' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td><th style="color: blue">инв.номер:</th><td colspan="2">' + 
-							data[3] + '</td></tr>');
+							buff + '<tr><td class="nameleft">' + data[0] + '</td><td class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><th style="color: blue">инв.номер:</th><th colspan="2">' +
+							data[3] + '</th></tr>');
 					}
 					//console.log(data[0] + '   ' + data[1] + '   ' + data[2] + '   ' + data[3] + '   ' + data[4]);
 				}
 			});
 			return;
 		}
-		
+
 		function get_sw_item(id_sw) {
 			$.ajax({
 				type: 'POST',
@@ -133,13 +135,13 @@ if (isset($_SESSION['logged_user'])) {
 					buff = document.getElementById('dynamic_sw').innerHTML;
 					//console.log('периферия////');
 					$('#dynamic_sw').html(
-						buff + '<tr><td>' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td><td>' + data[3] + '</td><td>' + data[4] + '</td><td>' + data[5] + '</td></tr>');
+						buff + '<tr><td class="nameleft">' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td><td>' + data[3] + '</td><td>' + data[4] + '</td><td>' + data[5] + '</td></tr>');
 					//console.log(data[0] + '   ' + data[1] + '   ' + data[2] + '   ' + data[3] + '   ' + data[4]);
 				}
 			});
 			return;
 		}
-		
+
 		function get_decorative_rows() {
 			components = ['dynamic_stor', 'dynamic_disp', 'dynamic_mult'];
 			components.forEach(function(item, i, data){
@@ -152,10 +154,10 @@ if (isset($_SESSION['logged_user'])) {
 				$('#case').html('<tr><th scope="row">Корпус</th><td colspan="2">&nbsp;</td><td>&nbsp;</td><td colspan="2">&nbsp;</td></tr>');
 			}
 			if (document.getElementById('printer').textContent.trim() == '') {
-				$('#printer').html('<tr><th scope="row">Принтер</th><td colspan="2">&nbsp;</td><th style="color: blue">инв.номер:</th><td colspan="2">&nbsp;</td></tr>');
+				$('#printer').html('<tr><th scope="row">Принтер</th><td colspan="2">&nbsp;</td><th style="color: blue">инв.номер:</th><th colspan="2">&nbsp;</th></tr>');
 			}
 		}
-		
+
 		function get_hw_array(id_pc) {
 			$.ajax({
 				type: 'POST',
@@ -172,7 +174,7 @@ if (isset($_SESSION['logged_user'])) {
 			});
 			return;
 		}
-		
+
 		function get_pd_array(id_pc) {
 			$.ajax({
 				type: 'POST',
@@ -188,7 +190,7 @@ if (isset($_SESSION['logged_user'])) {
 				}
 			});
 		}
-		
+
 		function get_sw_array(id_pc) {
 			$.ajax({
 				type: 'POST',
@@ -204,7 +206,7 @@ if (isset($_SESSION['logged_user'])) {
 				}
 			});
 		}
-		
+
 		$(document).ready(function(){
 			console.log("миииу  ");
 		});
@@ -218,11 +220,30 @@ if (isset($_SESSION['logged_user'])) {
 			padding: 5px !important;
 			font-size: 10pt !important;
 		}
-		table {
+		table, table tr, table th, table tr td, table th td, tbody {
 			border-collapse: collapse;
+			border: 1px solid #000 !important;
+			line-height: 100%;
+		}
+		table tbody tr th {
+			vertical-align: middle !important;
+		}
+		table tr td {
+			font-size: 9pt !important;
 		}
 		td {
 			vertical-align: middle !important;
+		}
+		.notes {
+			color: blue;
+			font-size: 8pt !important;
+			text-align: left !important;
+		}
+		.nameleft {
+			text-align: left !important;
+		}
+		.nameright {
+			text-align: right !important;
 		}
 	</style>
 </head>
@@ -230,84 +251,83 @@ if (isset($_SESSION['logged_user'])) {
 <!--Тушка-->
 
 <body>
-    <div class="table-responsive text-center">
-        <table id="pasport" class="table table-bordered table-hover" style="page-break-inside: avoid">
+    <div id="one_way" class="table-responsive text-center">
+		<table style="border: hidden !important; font-family: Arial; font-size: 10pt">
 			<thead>
 				<tr>
-					<th colspan="6">Паспорт Автоматизированного рабочего места</th>
+					<th colspan="6" style="font-size: 10pt; text-align: center">ПАСПОРТ АВТОМАТИЗИРОВАННОГО РАБОЧЕГО МЕСТА</th>
 				</tr>
 			</thead>
-			<thead>
+		</table>
+		<table id="pasport" class="table table-bordered table-hover" style="page-break-inside: avoid; font-family: Arial; font-size: 10pt">
+			<tbody>
 				<tr>
-					<th colspan="6" style="background-color: #8FBC8F">Описание компьютера</th>
+					<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Описание компьютера</th>
 				</tr>
-			</thead>
+			</tbody>
 
 			<tbody>
 				<tr>
-					<th scope="row">Дата производства:
-					</th>
-					<td colspan="2">
+					<td scope="row" class="nameleft">Дата производства:
+					</td>
+					<th colspan="2">
 						<?php
                             echo get_data_via_id($pdo, $ID_pc, 'Computer', 'manufacture_date');
                         ?>
-					</td>
-					<th scope="row">Способ производства:</th>
-					<td colspan="2">
+					</th>
+					<td scope="row" class="nameleft">Способ производства:</td>
+					<th colspan="2">
 						<?php
                             echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'manufacture_method', 'Manufacture_method', 'ID_mm', 'method');
                         ?>
-					</td>
+					</th>
 				</tr>
                 <!--Головушка-->
 				<tr>
-					<th scope="row">Дата постановки на баланс по информации бухгалтерии учреждения</th>
-					<td colspan="2">
+					<td scope="row" style="width: 170px" class="nameleft">Дата постановки на баланс по информации бухгалтерии учреждения</td>
+					<th colspan="2">
 						<?php
                             echo get_data_via_id($pdo, $ID_pc, 'Computer', 'bookkeeping_balance_sheet');
                         ?>
-					</td>
-					<th scope="row">№ и дата документа постановки на баланс</th>
-					<td colspan>
+					</th>
+					<td scope="row" class="nameleft">№ и дата документа постановки на баланс</td>
+					<th colspan>
                         <?php
                             echo get_data_via_id($pdo, $ID_pc, 'Computer', 'doc_balance_num');
                         ?>
-					</td>
-					<td colspan>
+					</th>
+					<th colspan>
 						<?php
                             echo get_data_via_id($pdo, $ID_pc, 'Computer', 'doc_balance_date');
                         ?>
-					</td>
+					</th>
 				</tr>
 
 				<tr>
-					<th scope="row">Имя рабочей станции</th>
-					<td colspan="2">
+					<td scope="row" class="nameleft">Имя рабочей станции</td>
+					<th colspan="2">
 						<?php
                             echo get_data_via_id($pdo, $ID_pc, 'Computer', 'pc_name');
                         ?>
-					</td>
-					<th scope="row">Место установки</th>
-					<td>
+					</th>
+					<td scope="row" class="nameleft">Место установки</td>
+					<th colspan="2" style="min-width: 250px">
 						<?php
                             echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
-                        ?>
-					</td>
-					<td>
-						<?php
+							echo ', ';
                             echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_position', 'Position', 'ID_pos', 'position');
                         ?>
-					</td>
+					</th>
 				</tr>
 
 				<tr>
-					<th scope="row">ИНВ.НОМЕР:</th>
-					<td colspan="2">
+					<td scope="row" class="nameleft">ИНВ.НОМЕР:</td>
+					<th colspan="2">
 						<?php
                             echo get_data_via_id($pdo, $ID_pc, 'Computer', 'inventory_number');
                         ?>
-					</td>
-					<th scope="row">Ответственный за эксплуатацию:</th>
+					</th>
+					<td scope="row" class="nameleft">Ответственный за эксплуатацию:</td>
 					<td colspan="2">
 						<?php
                             echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'responsible', 'Worker', 'ID_worker', 'full_name');
@@ -316,47 +336,47 @@ if (isset($_SESSION['logged_user'])) {
 				</tr>
 			</tbody>
 
-			<thead>
+			<tbody>
 				<tr>
-					<th colspan="6" style="background-color: #8FBC8F">Аппаратное обеспечение</th>
+					<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Аппаратное обеспечение</th>
 				</tr>
-			</thead>
-			<thead>
+			</tbody>
+			<tbody>
 				<tr>
-					<th style="background-color: #8FBC8F">Наименование</th>
-					<th colspan="2" style="background-color: #8FBC8F">Описание</th>
-					<th style="background-color: #8FBC8F">Характеристика</th>
-					<th colspan="2" style="background-color: #8FBC8F">Примечание</th>
+					<th style="background-color: #ccffcc; font-size: 10pt">Наименование</th>
+					<th colspan="2" style="background-color: #ccffcc; font-size: 10pt">Описание</th>
+					<th style="background-color: #ccffcc; font-size: 10pt">Характеристика</th>
+					<th colspan="2" style="background-color: #ccffcc; font-size: 10pt">Примечания</th>
 				</tr>
-			</thead>
+			</tbody>
 
 			<tbody>
 				<tr>
-					<th scope="row">Системная плата</th>
-					<td colspan="2" id="mb1">
+					<th scope="row" class="nameleft">Системная плата</th>
+					<td colspan="2" id="mb1" class="nameleft">
 					</td>
 					<td></td>
-					<td colspan="2" id="mb3">
+					<td colspan="2" id="mb3" class="notes">
 					</td>
 				</tr>
 
 				<tr>
-					<th scope="row">Оперативная память</th>
-					<td colspan="2" id="ram1">
+					<th scope="row" class="nameleft">Оперативная память</th>
+					<td colspan="2" id="ram1" class="nameleft">
 					</td>
 					<td id="ram2">
 					</td>
-					<td colspan="2" id="ram3">
+					<td colspan="2" id="ram3" class="notes">
 					</td>
 				</tr>
 
 				<tr>
-					<th scope="row">ЦП</th>
-					<td colspan="2" id="cpu1">
+					<th scope="row" class="nameleft">ЦП</th>
+					<td colspan="2" id="cpu1" class="nameleft">
 					</td>
 					<td id="cpu2">
 					</td>
-					<td colspan="2" id="cpu3">
+					<td colspan="2" id="cpu3" class="notes">
 					</td>
 				</tr>
 			</tbody>
@@ -364,7 +384,7 @@ if (isset($_SESSION['logged_user'])) {
 			<tbody id="storage">
 
 				<tr>
-					<th colspan="6" style="background-color: #D3D3D3">Хранение данных:</th>
+					<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Хранение данных:</th>
 				</tr>
 
 				<tbody id="dynamic_stor">
@@ -374,7 +394,7 @@ if (isset($_SESSION['logged_user'])) {
 
 			<tbody id="display">
 				<tr>
-					<th colspan="6" style="background-color: #D3D3D3">Отображение:</th>
+					<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Отображение:</th>
 				</tr>
 
 				<tbody id="dynamic_disp">
@@ -384,7 +404,7 @@ if (isset($_SESSION['logged_user'])) {
 
 			<tbody id="multi">
 				<tr>
-					<th colspan="6" style="background-color: #D3D3D3">Мультимедиа:</th>
+					<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Мультимедиа:</th>
 				</tr>
 
 				<tbody id="dynamic_mult">
@@ -393,14 +413,14 @@ if (isset($_SESSION['logged_user'])) {
 			</tbody>
 
 			<tr>
-				<th colspan="6" style="background-color: #D3D3D3">Сеть:</th>
+				<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Сеть:</th>
 			</tr>
-			
+
 			<tbody id="dynamic_net">
 			</tbody>
 
 			<tbody>
-				
+
 				<tbody id="case">
 				</tbody>
 
@@ -409,7 +429,7 @@ if (isset($_SESSION['logged_user'])) {
 
 				<tbody id="perepherals">
 					<tr>
-						<th colspan="6" style="background-color: #D3D3D3">Другие периферийные устройства:</th>
+						<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Другие периферийные устройства:</th>
 					</tr>
 
 					<tbody id="dynamic_per">
@@ -417,11 +437,11 @@ if (isset($_SESSION['logged_user'])) {
 				</tbody>
 			</tbody>
 
-			<thead>
+			<tbody>
 				<tr>
-					<th colspan="6" style="background-color: #8FBC8F">Программное обеспечение</th>
+					<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Программное обеспечение</th>
 				</tr>
-			</thead>
+			</tbody>
 
 			<tbody id="sw">
 				<tr>
@@ -430,7 +450,7 @@ if (isset($_SESSION['logged_user'])) {
 					<th scope="row">Номер лицензии</th>
 					<th scope="row">Ключ продукта</th>
 					<th scope="row">Версия</th>
-					<th scope="row">Примечание</th>
+					<th scope="row">Прим.</th>
 				</tr>
 
 				<tbody id="dynamic_sw">
@@ -439,24 +459,35 @@ if (isset($_SESSION['logged_user'])) {
 			
 			<tbody>
 				<tr>
-					<th colspan="3">Заместитель директора по основной работе</th>
-					<th colspan="3">Заведующий отделом автоматизации</th>
+					<td colspan="2" class="nameleft" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Заместитель директора по основной работе:</td>
+					<td></td>
+					<td colspan="2" class="nameleft" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Заведующий отделом автоматизации:</td>
+					<td style="border-right: hidden !important"></td>
 				</tr>
 				<tr>
-					<td colspan="3">
+					<td style="border-left: hidden !important">
 						<?php
 							echo get_workers_name($pdo, 'Заместитель директора по основной работе');
 						?>
 					</td>
-					<td colspan="3">
+					<td></td><td style="border: hidden !important"></td>
+					<td style="border-right: hidden !important">
 						<?php
 							echo get_workers_name($pdo, 'Заведующий отделом автоматизации');
 						?>
 					</td>
+					<td></td><td style="border-top: hidden !important; border-right: hidden !important"></td>
+				</tr>
+				<tr>
+					<td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">ФИО</td>
+					<td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Подпись</td>
+					<td style="border: hidden !important"></td>
+					<td colspan="2" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">ФИО</td>
+					<td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Подпись</td>
 				</tr>
 			</tbody>
-
 		</table>
+		<input type="submit" class="btn btn-primary" value="Сохранить в PDF"  onclick="return xepOnline.Formatter.Format('one_way',{render:'download', pageWidth:'216mm', pageHeight:'279mm'});">
     </div>
 	<?php
 		echo

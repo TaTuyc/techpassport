@@ -360,7 +360,23 @@
             $result = $pdo->prepare($sql);
             $result->execute();
             foreach($result as $row) {
-                return $row['full_name'];
+                $string = $row['full_name'];
+                $separator = ' ';
+                
+                $array_words = [];
+                $tok = strtok($string, $separator);
+                
+                while($tok) {
+                    $array_words[] = $tok;
+                    $tok = strtok($separator);
+                }
+                
+                $array_words[0] = $array_words[0] . ' ';
+                mb_internal_encoding("UTF-8");
+                $array_words[1] = mb_substr($array_words[1], 0, 1) . '.';
+                $array_words[2] = mb_substr($array_words[2], 0, 1) . '.';
+                
+                return $array_words[0] . $array_words[1] . $array_words[2];
             }
         }        
         return '';

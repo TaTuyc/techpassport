@@ -73,7 +73,7 @@ if (isset($_SESSION['logged_user'])) {
                     buff +=
                     '<tr><th colspan="4" style="background-color: #D3D3D3">Добавление кабинета</tr>' +
                     '<tr><td><td><input type="text" class="input-group-text" name="create_office" placeholder="Ручной ввод" maxlength="20">';
-                    buff += '<td style="width: 15%"><button type="submit" class="btn btn-success" style="width: 100%" onclick="create_office()">Создать</button></td>';
+                    buff += '<td style="width: 15%"><button type="submit" class="btn btn-success" style="width: 100%">Создать</button></td>';
                     buff += '<td></td></tr>';
 					$('#offices_list').html(buff);
 				}
