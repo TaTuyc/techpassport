@@ -381,4 +381,23 @@
         }        
         return '';
     }
+    
+    function get_formatted_date($date) {
+        $string = $date;
+        $separator = '-';
+        
+        $array_words = [];
+        $tok = strtok($string, $separator);
+        
+        while($tok) {
+            $array_words[] = $tok;
+            $tok = strtok($separator);
+        }
+        
+        if (isset($array_words[2])) {
+            return $array_words[2] . '.' . $array_words[1] . '.' . $array_words[0];
+        } else {
+            return '';
+        }
+    }
 ?>

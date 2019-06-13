@@ -8,15 +8,10 @@ if (isset($_POST['log_out'])) {
 if (isset($_SESSION['logged_user'])) {
 ?>
 <!DOCTYPE html>
-<html>
-
-<!--Головушка-->
-
+<html id="html">
 <head>
 	<meta charset="utf-8">
-	<!--Тип Кодировки-->
 	<title>Паспорт.</title>
-	<!--Заголовок-->
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<script type="text/javascript" src="../script/jquery.js"></script>
 	<script type="text/javascript" src="../script/xepOnline.jqPlugin.js"></script>
@@ -25,7 +20,6 @@ if (isset($_SESSION['logged_user'])) {
 	<script type="text/javascript" src="../script/dynamicTable.js"></script>
 	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
     <script type="text/javascript">
-
 		function get_hw_item(id_hw) {
 			$.ajax({
 				type: 'POST',
@@ -74,9 +68,8 @@ if (isset($_SESSION['logged_user'])) {
 					} else if (data[4] == '5') {
 						buff = document.getElementById('case').innerHTML;
 						$('#case').html(
-							'<tr><th scope="row" class="nameleft">Корпус</th><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
+							'<tr><th style="text-align: left !important">Корпус</th><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					}
-					//console.log(data[0] + '   ' + data[1] + '   ' + data[2] + '   ' + data[3] + '   ' + data[4]);
 				}
 			});
 		}
@@ -98,20 +91,18 @@ if (isset($_SESSION['logged_user'])) {
 					}
 					if (data[4] == '2') {
 						buff = document.getElementById('dynamic_disp').innerHTML;
-						//console.log('периферия////');
 						$('#dynamic_disp').html(
 							buff + '<tr><td class="nameright">' + data[0] + '</td><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					} else if (data[4] == '6') {
 						buff = document.getElementById('printer').innerHTML;
 						$('#printer').html(
-							'<tr><th scope="row" class="nameleft">Принтер</th><td colspan="2" class="nameleft">' + data[1] + '</td><th style="color: blue">инв.номер:</th><th colspan="2">' + data[3] + '</th></tr>');
+							'<tr><th style="text-align: left !important">Принтер</th><td colspan="2" class="nameleft">' + data[1] + '</td><td></td><th style="color: blue">инв.номер:</th><th>' + data[3] + '</th></tr>');
 					} else if (data[4] == '7') {
 						buff = document.getElementById('dynamic_per').innerHTML;
 						$('#dynamic_per').html(
-							buff + '<tr><td class="nameleft">' + data[0] + '</td><td class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><th style="color: blue">инв.номер:</th><th colspan="2">' +
+							buff + '<tr><td class="nameleft">' + data[0] + '</td><td class="nameleft" colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><th style="color: blue">инв.номер:</th><th>' +
 							data[3] + '</th></tr>');
 					}
-					//console.log(data[0] + '   ' + data[1] + '   ' + data[2] + '   ' + data[3] + '   ' + data[4]);
 				}
 			});
 			return;
@@ -136,14 +127,13 @@ if (isset($_SESSION['logged_user'])) {
 					//console.log('периферия////');
 					$('#dynamic_sw').html(
 						buff + '<tr><td class="nameleft">' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td><td>' + data[3] + '</td><td>' + data[4] + '</td><td>' + data[5] + '</td></tr>');
-					//console.log(data[0] + '   ' + data[1] + '   ' + data[2] + '   ' + data[3] + '   ' + data[4]);
-				}
+					}
 			});
 			return;
 		}
 
 		function get_decorative_rows() {
-			components = ['dynamic_stor', 'dynamic_disp', 'dynamic_mult'];
+			components = ['dynamic_stor', 'dynamic_disp', 'dynamic_mult', 'dynamic_net', 'dynamic_per', 'dynamic_sw'];
 			components.forEach(function(item, i, data){
 				if (document.getElementById(item).textContent.trim() == '') {
 					$('#' + item).html(
@@ -151,10 +141,10 @@ if (isset($_SESSION['logged_user'])) {
 				}
 			});
 			if (document.getElementById('case').textContent.trim() == '') {
-				$('#case').html('<tr><th scope="row">Корпус</th><td colspan="2">&nbsp;</td><td>&nbsp;</td><td colspan="2">&nbsp;</td></tr>');
+				$('#case').html('<tr><th class="nameleft">Корпус</th><td colspan="2">&nbsp;</td><td>&nbsp;</td><td colspan="2">&nbsp;</td></tr>');
 			}
 			if (document.getElementById('printer').textContent.trim() == '') {
-				$('#printer').html('<tr><th scope="row">Принтер</th><td colspan="2">&nbsp;</td><th style="color: blue">инв.номер:</th><th colspan="2">&nbsp;</th></tr>');
+				$('#printer').html('<tr><th class="nameleft">Принтер</th><td colspan="2">&nbsp;</td><th style="color: blue">инв.номер:</th><th colspan="2">&nbsp;</th></tr>');
 			}
 		}
 
@@ -206,10 +196,25 @@ if (isset($_SESSION['logged_user'])) {
 				}
 			});
 		}
-
-		$(document).ready(function(){
-			console.log("миииу  ");
-		});
+		
+		function reform_for_pdf() {
+			html = '<!DOCTYPE html><html>' + document.getElementById("html").innerHTML + '</html>';
+			html = deleteScriptTag(html);
+			html = deleteTbodyTag(html);
+			html = deleteSpaces(html);
+			html = deleteInputTag(html);
+			var x = $.ajax({
+				type: 'POST',
+				url: '../php/ajaxData.php',
+				async: false,
+				data: {
+					print_passport: html},
+				dataType: "json"
+			}).responseText;
+			
+			window.location.replace('./goprint.php');
+			console.log(html);
+		}
 	</script>
 	<?php
         $pdo = connect_db();
@@ -217,15 +222,22 @@ if (isset($_SESSION['logged_user'])) {
     ?>
 	<style>
 		* {
-			padding: 5px !important;
+            margin: 0px !important;
+			padding-left: 3px !important;
+            padding-right: 3px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
 			font-size: 10pt !important;
 		}
-		table, table tr, table th, table tr td, table th td, tbody {
+        table {
+            padding: 0px !important;
+        }
+		table, table tr, table th, table tr td, table th td {
 			border-collapse: collapse;
 			border: 1px solid #000 !important;
 			line-height: 100%;
 		}
-		table tbody tr th {
+		table tr th {
 			vertical-align: middle !important;
 		}
 		table tr td {
@@ -245,249 +257,222 @@ if (isset($_SESSION['logged_user'])) {
 		.nameright {
 			text-align: right !important;
 		}
+        .bhi {
+            border: hidden !important;
+        }
 	</style>
 </head>
-
-<!--Тушка-->
-
 <body>
-    <div id="one_way" class="table-responsive text-center">
-		<table style="border: hidden !important; font-family: Arial; font-size: 10pt">
-			<thead>
-				<tr>
-					<th colspan="6" style="font-size: 10pt; text-align: center">ПАСПОРТ АВТОМАТИЗИРОВАННОГО РАБОЧЕГО МЕСТА</th>
-				</tr>
-			</thead>
-		</table>
+    <div class="table-responsive text-center" style="margin-left: 40px !important; margin-right: 40px !important">
+		<table class="bhi">
+            <tr class="bhi">
+                <td class="bhi" style="width: 25%"><img src="../img/logo.png" alt="Лого" width="115px" height="143px">
+                <td class="bhi" style="width: 50%; font-size: 10pt !important">Управление культуры Комитета по социальной политике и культуре Администрации г. Иркутска Муниципальное учреждение культуры «Гуманитарный центр – библиотека имени семьи Полевых» 
+                <td class="bhi" style="width: 25%"><img src="../img/pc.png" alt="ПК" width="158px" height="119px">
+            </tr>
+            <tr>
+                <td colspan="3" class="bhi">
+                    ПАСПОРТ АВТОМАТИЗИРОВАННОГО РАБОЧЕГО МЕСТА
+                </td>
+            </tr>
+        </table>
 		<table id="pasport" class="table table-bordered table-hover" style="page-break-inside: avoid; font-family: Arial; font-size: 10pt">
-			<tbody>
-				<tr>
-					<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Описание компьютера</th>
-				</tr>
-			</tbody>
+			<tr>
+				<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Описание компьютера</th>
+			</tr>
 
-			<tbody>
-				<tr>
-					<td scope="row" class="nameleft">Дата производства:
-					</td>
-					<th colspan="2">
-						<?php
-                            echo get_data_via_id($pdo, $ID_pc, 'Computer', 'manufacture_date');
-                        ?>
-					</th>
-					<td scope="row" class="nameleft">Способ производства:</td>
-					<th colspan="2">
-						<?php
-                            echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'manufacture_method', 'Manufacture_method', 'ID_mm', 'method');
-                        ?>
-					</th>
-				</tr>
-                <!--Головушка-->
-				<tr>
-					<td scope="row" style="width: 170px" class="nameleft">Дата постановки на баланс по информации бухгалтерии учреждения</td>
-					<th colspan="2">
-						<?php
-                            echo get_data_via_id($pdo, $ID_pc, 'Computer', 'bookkeeping_balance_sheet');
-                        ?>
-					</th>
-					<td scope="row" class="nameleft">№ и дата документа постановки на баланс</td>
-					<th colspan>
-                        <?php
-                            echo get_data_via_id($pdo, $ID_pc, 'Computer', 'doc_balance_num');
-                        ?>
-					</th>
-					<th colspan>
-						<?php
-                            echo get_data_via_id($pdo, $ID_pc, 'Computer', 'doc_balance_date');
-                        ?>
-					</th>
-				</tr>
+			<tr>
+				<td class="nameleft">Дата производства:
+				</td>
+				<th colspan="2">
+					<?php
+						echo get_data_via_id($pdo, $ID_pc, 'Computer', 'manufacture_date');
+					?>
+				</th>
+				<td class="nameleft">Способ производства:</td>
+				<th colspan="2">
+					<?php
+						echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'manufacture_method', 'Manufacture_method', 'ID_mm', 'method');
+					?>
+				</th>
+			</tr>
+			<tr>
+				<td style="width: 170px" class="nameleft">Дата постановки на баланс по информации бухгалтерии учреждения</td>
+				<th colspan="2">
+					<?php
+						echo get_formatted_date(get_data_via_id($pdo, $ID_pc, 'Computer', 'bookkeeping_balance_sheet'));
+					?>
+				</th>
+				<td class="nameleft">№ и дата документа постановки на баланс</td>
+				<th colspan>
+					<?php
+						echo get_data_via_id($pdo, $ID_pc, 'Computer', 'doc_balance_num');
+					?>
+				</th>
+				<th colspan>
+					<?php
+						echo get_formatted_date(get_data_via_id($pdo, $ID_pc, 'Computer', 'doc_balance_date'));
+					?>
+				</th>
+			</tr>
 
-				<tr>
-					<td scope="row" class="nameleft">Имя рабочей станции</td>
-					<th colspan="2">
-						<?php
-                            echo get_data_via_id($pdo, $ID_pc, 'Computer', 'pc_name');
-                        ?>
-					</th>
-					<td scope="row" class="nameleft">Место установки</td>
-					<th colspan="2" style="min-width: 250px">
-						<?php
-                            echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
-							echo ', ';
-                            echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_position', 'Position', 'ID_pos', 'position');
-                        ?>
-					</th>
-				</tr>
+			<tr>
+				<td class="nameleft">Имя рабочей станции</td>
+				<th colspan="2">
+					<?php
+						echo get_data_via_id($pdo, $ID_pc, 'Computer', 'pc_name');
+					?>
+				</th>
+				<td class="nameleft">Место установки</td>
+				<th colspan="2" style="min-width: 250px">
+					<?php
+						echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_office', 'Office', 'ID_office', 'office');
+						echo ', ';
+						echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'installation_site_position', 'Position', 'ID_pos', 'position');
+					?>
+				</th>
+			</tr>
 
-				<tr>
-					<td scope="row" class="nameleft">ИНВ.НОМЕР:</td>
-					<th colspan="2">
-						<?php
-                            echo get_data_via_id($pdo, $ID_pc, 'Computer', 'inventory_number');
-                        ?>
-					</th>
-					<td scope="row" class="nameleft">Ответственный за эксплуатацию:</td>
-					<td colspan="2">
-						<?php
-                            echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'responsible', 'Worker', 'ID_worker', 'full_name');
-                        ?>
-					</td>
-				</tr>
-			</tbody>
+			<tr>
+				<td class="nameleft">ИНВ.НОМЕР:</td>
+				<th colspan="2">
+					<?php
+						echo get_data_via_id($pdo, $ID_pc, 'Computer', 'inventory_number');
+					?>
+				</th>
+				<td class="nameleft">Ответственный за эксплуатацию:</td>
+				<td colspan="2">
+					<?php
+						echo get_data_via_2id($pdo, $ID_pc, 'Computer', 'responsible', 'Worker', 'ID_worker', 'full_name');
+					?>
+				</td>
+			</tr>
 
-			<tbody>
-				<tr>
-					<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Аппаратное обеспечение</th>
-				</tr>
-			</tbody>
-			<tbody>
-				<tr>
-					<th style="background-color: #ccffcc; font-size: 10pt">Наименование</th>
-					<th colspan="2" style="background-color: #ccffcc; font-size: 10pt">Описание</th>
-					<th style="background-color: #ccffcc; font-size: 10pt">Характеристика</th>
-					<th colspan="2" style="background-color: #ccffcc; font-size: 10pt">Примечания</th>
-				</tr>
-			</tbody>
+			<tr>
+				<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Аппаратное обеспечение</th>
+			</tr>
+			<tr>
+				<th style="background-color: #ccffcc; font-size: 10pt">Наименование</th>
+				<th colspan="2" style="background-color: #ccffcc; font-size: 10pt">Описание</th>
+				<th style="background-color: #ccffcc; font-size: 10pt">Характеристика</th>
+				<th colspan="2" style="background-color: #ccffcc; font-size: 10pt">Примечания</th>
+			</tr>
 
-			<tbody>
-				<tr>
-					<th scope="row" class="nameleft">Системная плата</th>
-					<td colspan="2" id="mb1" class="nameleft">
-					</td>
-					<td></td>
-					<td colspan="2" id="mb3" class="notes">
-					</td>
-				</tr>
+			<tr>
+				<th class="nameleft">Системная плата</th>
+				<td colspan="2" id="mb1" class="nameleft">
+				</td>
+				<td></td>
+				<td colspan="2" id="mb3" class="notes">
+				</td>
+			</tr>
 
-				<tr>
-					<th scope="row" class="nameleft">Оперативная память</th>
-					<td colspan="2" id="ram1" class="nameleft">
-					</td>
-					<td id="ram2">
-					</td>
-					<td colspan="2" id="ram3" class="notes">
-					</td>
-				</tr>
+			<tr>
+				<th class="nameleft">Оперативная память</th>
+				<td colspan="2" id="ram1" class="nameleft">
+				</td>
+				<td id="ram2">
+				</td>
+				<td colspan="2" id="ram3" class="notes">
+				</td>
+			</tr>
 
-				<tr>
-					<th scope="row" class="nameleft">ЦП</th>
-					<td colspan="2" id="cpu1" class="nameleft">
-					</td>
-					<td id="cpu2">
-					</td>
-					<td colspan="2" id="cpu3" class="notes">
-					</td>
-				</tr>
-			</tbody>
+			<tr>
+				<th class="nameleft">ЦП</th>
+				<td colspan="2" id="cpu1" class="nameleft">
+				</td>
+				<td id="cpu2">
+				</td>
+				<td colspan="2" id="cpu3" class="notes">
+				</td>
+			</tr>
 
-			<tbody id="storage">
+			<tr>
+				<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left !important">Хранение данных:</th>
+			</tr>
 
-				<tr>
-					<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Хранение данных:</th>
-				</tr>
-
-				<tbody id="dynamic_stor">
-				</tbody>
-
-			</tbody>
-
-			<tbody id="display">
-				<tr>
-					<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Отображение:</th>
-				</tr>
-
-				<tbody id="dynamic_disp">
-				</tbody>
-
-			</tbody>
-
-			<tbody id="multi">
-				<tr>
-					<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Мультимедиа:</th>
-				</tr>
-
-				<tbody id="dynamic_mult">
-				</tbody>
-
+			<tbody id="dynamic_stor">
 			</tbody>
 
 			<tr>
-				<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Сеть:</th>
+				<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left !important">Отображение:</th>
+			</tr>
+
+			<tbody id="dynamic_disp">
+			</tbody>
+
+			<tr>
+				<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left !important">Мультимедиа:</th>
+			</tr>
+
+			<tbody id="dynamic_mult">
+			</tbody>
+
+			<tr>
+				<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left !important">Сеть:</th>
 			</tr>
 
 			<tbody id="dynamic_net">
 			</tbody>
 
-			<tbody>
-
-				<tbody id="case">
-				</tbody>
-
-				<tbody id="printer" style="border-top: 0px">
-				</tbody>
-
-				<tbody id="perepherals">
-					<tr>
-						<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left">Другие периферийные устройства:</th>
-					</tr>
-
-					<tbody id="dynamic_per">
-					</tbody>
-				</tbody>
+			<tbody id="case">
 			</tbody>
 
-			<tbody>
-				<tr>
-					<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Программное обеспечение</th>
-				</tr>
+			<tbody id="printer" style="border-top: 0px">
 			</tbody>
 
-			<tbody id="sw">
-				<tr>
-					<th scope="row">Наименование продукта</th>
-					<th scope="row">Тип лицензии</th>
-					<th scope="row">Номер лицензии</th>
-					<th scope="row">Ключ продукта</th>
-					<th scope="row">Версия</th>
-					<th scope="row">Прим.</th>
-				</tr>
+			<tr>
+				<th colspan="6" style="background-color: #c0c0c0; font-size: 10pt; text-align: left !important">Другие периферийные устройства:</th>
+			</tr>
 
-				<tbody id="dynamic_sw">
-				</tbody>
+			<tbody id="dynamic_per">
+			</tbody>
+
+			<tr>
+				<th colspan="6" style="background-color: #ccffcc; font-size: 10pt">Программное обеспечение</th>
+			</tr>
+
+			<tr>
+				<th>Наименование продукта</th>
+				<th>Тип лицензии</th>
+				<th>Номер лицензии</th>
+				<th>Ключ продукта</th>
+				<th>Версия</th>
+				<th>Прим.</th>
+			</tr>
+
+			<tbody id="dynamic_sw">
 			</tbody>
 			
-			<tbody>
-				<tr>
-					<td colspan="2" class="nameleft" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Заместитель директора по основной работе:</td>
-					<td></td>
-					<td colspan="2" class="nameleft" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Заведующий отделом автоматизации:</td>
-					<td style="border-right: hidden !important"></td>
-				</tr>
-				<tr>
-					<td style="border-left: hidden !important">
-						<?php
-							echo get_workers_name($pdo, 'Заместитель директора по основной работе');
-						?>
-					</td>
-					<td></td><td style="border: hidden !important"></td>
-					<td style="border-right: hidden !important">
-						<?php
-							echo get_workers_name($pdo, 'Заведующий отделом автоматизации');
-						?>
-					</td>
-					<td></td><td style="border-top: hidden !important; border-right: hidden !important"></td>
-				</tr>
-				<tr>
-					<td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">ФИО</td>
-					<td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Подпись</td>
-					<td style="border: hidden !important"></td>
-					<td colspan="2" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">ФИО</td>
-					<td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Подпись</td>
-				</tr>
-			</tbody>
+			<tr>
+                <td colspan="2" class="nameleft" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Заместитель директора по основной работе:</td>
+                <td style="border-left: hidden !important"></td>
+                <td colspan="2" class="nameleft" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Заведующий отделом автоматизации:</td>
+                <td style="border-right: hidden !important; border-left: hidden !important"></td>
+            </tr>
+            <tr>
+                <td style="border-left: hidden !important; border-top: hidden !important">
+                    <?php
+						echo get_workers_name($pdo, 'Заместитель директора по основной работе');
+					?>
+				</td>
+                <td style="border-top: hidden !important"></td><td style="border: hidden !important"></td>
+                <td colspan="2" style="border-left: hidden !important; border-top: hidden !important; border-right: hidden !important">
+                    <?php
+						echo get_workers_name($pdo, 'Заведующий отделом автоматизации');
+					?>
+				</td>
+                <td style="border-top: hidden !important; border-right: hidden !important"></td>
+            </tr>
+            <tr>
+                <td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">ФИО</td>
+                <td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Подпись</td>
+                <td style="border: hidden !important"></td>
+                <td colspan="2" style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">ФИО</td>
+                <td style="border-left: hidden !important; border-bottom: hidden !important; border-right: hidden !important">Подпись</td>
+            </tr>
 		</table>
-		<input type="submit" class="btn btn-primary" value="Сохранить в PDF"  onclick="return xepOnline.Formatter.Format('one_way',{render:'download', pageWidth:'216mm', pageHeight:'279mm'});">
+		<input type="submit" class="btn btn-primary" value="Сохранить в PDF"  onclick="reform_for_pdf()">
     </div>
 	<?php
 		echo

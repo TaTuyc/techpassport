@@ -34,3 +34,44 @@ function getTypeDynamicRow(string_) {
         return 0;
     }
 }
+function deleteScriptTag(string_) {
+    start_pos = string_.search(/<script/);
+    while (start_pos != -1) {
+        end_pos = string_.search(/<\/script>/);
+        string_ = string_.substr(0, start_pos) + string_.substr(end_pos + 9);
+        start_pos = string_.search(/<script/);
+    }
+    return string_;
+}
+function deleteTbodyTag(string_) {
+    start_pos = string_.search(/<tbody>/);
+    while (start_pos != -1) {
+        string_ = string_.replace(/<tbody>/, '');
+        string_ = string_.replace(/<\/tbody>/, '');
+        start_pos = string_.search(/<tbody>/);
+    }
+    
+    start_pos = string_.search(/<tbody/);
+    while (start_pos != -1) {
+        string_ = string_.replace(/<tbody.+?>/, '');
+        string_ = string_.replace(/<\/tbody>/, '');
+        start_pos = string_.search(/<tbody/);
+    }
+    return string_;
+}
+function deleteSpaces(string_) {
+    start_pos = string_.search(/&nbsp;/);
+    while (start_pos != -1) {
+        string_ = string_.replace(/&nbsp;/, '');
+        start_pos = string_.search(/&nbsp;/);
+    }
+    return string_;
+}
+function deleteInputTag(string_) {
+    start_pos = string_.search(/<input/);
+    while (start_pos != -1) {
+        string_ = string_.replace(/<input.+?>/, '');
+        start_pos = string_.search(/<input/);
+    }
+    return string_;
+}

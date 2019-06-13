@@ -140,5 +140,8 @@ if (isset($_POST["mb_model"])) {
    echo get_pd_data($pdo, $_POST["get_pd_data"]);
 } elseif (isset($_POST["search_pc"])) {
    search_pc($pdo, $_POST["pc_name"], $_POST["pc_place"], $_POST["pc_inv_num"]);
+} elseif (isset($_POST["print_passport"])) {
+   $_SESSION["prepared_print_page"] = $_POST["print_passport"];
+   echo '';
 }
 ?>
