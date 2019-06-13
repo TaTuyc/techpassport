@@ -96,11 +96,11 @@ if (isset($_SESSION['logged_user'])) {
 					} else if (data[4] == '6') {
 						buff = document.getElementById('printer').innerHTML;
 						$('#printer').html(
-							'<tr><th style="text-align: left !important">Принтер</th><td colspan="2" class="nameleft">' + data[1] + '</td><td></td><th style="color: blue">инв.номер:</th><th>' + data[3] + '</th></tr>');
+							'<tr><th style="text-align: left !important">Принтер</th><td colspan="2" class="nameleft">' + data[1] + '</td><td></td><th style="color: blue" class="nameleft">инв.номер:</th><th>' + data[3] + '</th></tr>');
 					} else if (data[4] == '7') {
 						buff = document.getElementById('dynamic_per').innerHTML;
 						$('#dynamic_per').html(
-							buff + '<tr><td class="nameleft">' + data[0] + '</td><td class="nameleft" colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><th style="color: blue">инв.номер:</th><th>' +
+							buff + '<tr><td class="nameleft">' + data[0] + '</td><td class="nameleft" colspan="2">' + data[1] + '</td><td>' + data[2] + '</td><th style="color: blue" class="nameleft">инв.номер:</th><th>' +
 							data[3] + '</th></tr>');
 					}
 				}
@@ -144,7 +144,7 @@ if (isset($_SESSION['logged_user'])) {
 				$('#case').html('<tr><th class="nameleft">Корпус</th><td colspan="2">&nbsp;</td><td>&nbsp;</td><td colspan="2">&nbsp;</td></tr>');
 			}
 			if (document.getElementById('printer').textContent.trim() == '') {
-				$('#printer').html('<tr><th class="nameleft">Принтер</th><td colspan="2">&nbsp;</td><th style="color: blue">инв.номер:</th><th colspan="2">&nbsp;</th></tr>');
+				$('#printer').html('<tr><th class="nameleft">Принтер</th><td colspan="2">&nbsp;</td><td></td><th style="color: blue" class="nameleft">инв.номер:</th><th>&nbsp;</th></tr>');
 			}
 		}
 
