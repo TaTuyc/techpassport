@@ -21,9 +21,10 @@ if (isset($_SESSION['logged_user'])) {
 	<script type="text/javascript" src="../jquery/jquerymin.js"></script>
     <script type="text/javascript">
 		function get_hw_item(id_hw) {
-			$.ajax({
+			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
+				async: false,
 				data: {
 					print_data: 'hw_id',
 					ID_hw: id_hw},
@@ -71,13 +72,14 @@ if (isset($_SESSION['logged_user'])) {
 							'<tr><th style="text-align: left !important">Корпус</th><td colspan="2" class="nameleft">' + data[1] + '</td><td>' + data[2] + '</td><td colspan="2" class="notes">' + data[3] + '</td></tr>');
 					}
 				}
-			});
+			}).responseText;
 		}
 
 		function get_pd_item(id_pd) {
-			$.ajax({
+			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
+				async: false,
 				data: {
 					print_data: 'pd_id',
 					ID_pd: id_pd},
@@ -104,14 +106,14 @@ if (isset($_SESSION['logged_user'])) {
 							data[3] + '</th></tr>');
 					}
 				}
-			});
-			return;
+			}).responseText;
 		}
 
 		function get_sw_item(id_sw) {
-			$.ajax({
+			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
+				async: false,
 				data: {
 					print_data: 'sw_id',
 					ID_sw: id_sw},
@@ -128,8 +130,7 @@ if (isset($_SESSION['logged_user'])) {
 					$('#dynamic_sw').html(
 						buff + '<tr><td class="nameleft">' + data[0] + '</td><td>' + data[1] + '</td><td>' + data[2] + '</td><td>' + data[3] + '</td><td>' + data[4] + '</td><td>' + data[5] + '</td></tr>');
 					}
-			});
-			return;
+			}).responseText;
 		}
 
 		function get_decorative_rows() {
@@ -149,9 +150,10 @@ if (isset($_SESSION['logged_user'])) {
 		}
 
 		function get_hw_array(id_pc) {
-			$.ajax({
+			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
+				async: false,
 				data: {
 					print_data: 'hw',
 					ID_pc: id_pc},
@@ -161,14 +163,14 @@ if (isset($_SESSION['logged_user'])) {
 						get_hw_item(item);
 					});
 				}
-			});
-			return;
+			}).responseText;
 		}
 
 		function get_pd_array(id_pc) {
-			$.ajax({
+			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
+				async: false,
 				data: {
 					print_data: 'pd',
 					ID_pc: id_pc},
@@ -178,13 +180,14 @@ if (isset($_SESSION['logged_user'])) {
 						get_pd_item(item);
 					});
 				}
-			});
+			}).responseText;
 		}
 
 		function get_sw_array(id_pc) {
-			$.ajax({
+			var x = $.ajax({
 				type: 'POST',
 				url: '../php/ajaxData.php',
+				async: false,
 				data: {
 					print_data: 'sw',
 					ID_pc: id_pc},
@@ -194,7 +197,7 @@ if (isset($_SESSION['logged_user'])) {
 						get_sw_item(item);
 					});
 				}
-			});
+			}).responseText;
 		}
 		
 		function reform_for_pdf() {
@@ -480,7 +483,7 @@ if (isset($_SESSION['logged_user'])) {
 			get_hw_array(' . $ID_pc . ');
 			get_pd_array(' . $ID_pc . ');
 			get_sw_array(' . $ID_pc . ');
-			setTimeout(function() {get_decorative_rows();}, 1000);
+			get_decorative_rows();
 		</script>';
 	?>
 </body>
